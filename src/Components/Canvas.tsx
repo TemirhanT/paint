@@ -1,6 +1,7 @@
 import React, {FC} from 'react';
 import { useRef, useEffect, useState} from "react";
-import { useDispatch, useSelector } from 'react-redux/es/exports';
+import { useSelector } from 'react-redux/es/exports';
+import { RootState } from '../store/store';
 
 
 const Canvas: FC = () => {
@@ -8,10 +9,11 @@ const Canvas: FC = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [canvasCtx, setCanvasCtx] = useState<any>({});
     const [width, setWidth] = useState<number>(window.innerWidth);
-    const [height, setHeight] = useState<number>(window.innerHeight-200);
+    const [height, setHeight] = useState<number>(window.innerHeight-300);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 
-    const linewidth: number = useSelector((state: any) => state.toolkit.linewidth);
+    const linewidth: number = useSelector((state: RootState) => state.brushReducer.linewidth);
+    const color = useSelector((state: RootState) => state.colorReducer.color)
 
 
     useEffect(() => {
@@ -22,7 +24,7 @@ const Canvas: FC = () => {
     useEffect(() => {
         const updateWindowDimensions = (): void => {
             setWidth(window.innerWidth);
-            setHeight(window.innerHeight - 200);
+            setHeight(window.innerHeight - 300);
         }
 
         window.addEventListener('resize', updateWindowDimensions);
@@ -30,8 +32,8 @@ const Canvas: FC = () => {
         return (): void => window.removeEventListener('resize', updateWindowDimensions);
     }, [])
 
-    canvasCtx.fillStyle = 'black';
-    canvasCtx.strokeStyle = 'black';
+    canvasCtx.fillStyle = color;
+    canvasCtx.strokeStyle = color;
     canvasCtx.lineWidth = linewidth;
 
     function mouseDown(e: React.MouseEvent<HTMLCanvasElement>): void {
@@ -50,13 +52,13 @@ const Canvas: FC = () => {
     }
 
     function draw(x: number, y: number): void {
-        canvasCtx.lineTo(x, y - 200);
+        canvasCtx.lineTo(x, y - 300);
         canvasCtx.stroke();
         canvasCtx.beginPath();
-        canvasCtx.arc(x, y - 200, linewidth/2 , 0, Math.PI * 2);
+        canvasCtx.arc(x, y - 300, linewidth/2 , 0, Math.PI * 2);
         canvasCtx.fill();
         canvasCtx.beginPath();
-        canvasCtx.moveTo(x, y - 200);
+        canvasCtx.moveTo(x, y - 300);
     }
 
 
