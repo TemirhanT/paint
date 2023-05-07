@@ -18,6 +18,7 @@ function App() {
         <Linewidth/>
         <Color/>
       </div>
+      <div className='space'></div>
       <Canvas/>
     </div>
   );

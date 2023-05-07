@@ -1,7 +1,9 @@
 import React, {FC} from 'react';
 import { useRef, useEffect, useState} from "react";
 import { useSelector } from 'react-redux/es/exports';
-import { RootState } from '../store/store';
+import { AppDispatch, RootState } from '../store/store';
+import { createAction } from '@reduxjs/toolkit';
+import { useDispatch } from 'react-redux';
 
 
 const Canvas: FC = () => {

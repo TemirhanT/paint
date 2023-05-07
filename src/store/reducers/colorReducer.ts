@@ -1,4 +1,4 @@
-import { createAction, createReducer } from "@reduxjs/toolkit"
+import { PayloadAction, createAction, createReducer } from "@reduxjs/toolkit"
 
 interface IColorState {
     color: string
@@ -9,10 +9,10 @@ const colorState: IColorState = {
 }
 
 
-export const changeColor: any = createAction("CHANGE_COLOR")
+export const changeColor = createAction<string>("CHANGE_COLOR")
 
 export default createReducer(colorState, {
-    [changeColor]: function (state: IColorState, action) {
+    "CHANGE_COLOR": function (state: IColorState, action: PayloadAction<string>) {
         state.color = action.payload
     }
 })

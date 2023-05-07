@@ -1,23 +1,22 @@
 import { FC } from "react";
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { brush_4, brush_6, brush_8, brush_10 } from "../../store/reducers/brushReducer";
-import { RootState } from "../../store/store";
-import { changeColor } from "../../store/reducers/colorReducer";
+import { changeBrush } from "../../store/reducers/brushReducer";
+import { AppDispatch, RootState } from "../../store/store";
 
 
 const Linewidth: FC = () => {
 
     const linewidth = useSelector((state: RootState) => state.brushReducer.linewidth)
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<AppDispatch>()
 
     return (
-        <div className='buttons'>
-            <button onClick={() => dispatch(brush_4())}>4fdghfhgjhgfj</button>
-            <button onClick={() => dispatch(brush_6())}>6jkhlnbvm</button>
-            <button onClick={() => dispatch(brush_8())}>8esdrtgdfx</button>
-            <button onClick={() => dispatch(brush_10())}>10iuyojkl</button>
-        </div>
+        <select className = 'selector' onChange={e => dispatch(changeBrush(+e.currentTarget.value))}>
+            <option value = '4'>4 px</option>
+            <option value = '6'>6 px</option>
+            <option value = '8'>8 px</option>
+            <option value = '10'>10 px</option>
+        </select>
     )
 }
 

@@ -13,6 +13,9 @@ const Color: FC = () => {
     return ( 
         <div className="color-picker">
             <SketchPicker
+            className="sketch-picker"
+            disableAlpha
+            presetColors={[]}
             color={color}
             onChange={(newColor) => dispatch(changeColor(newColor.hex))}/>
         </div>
