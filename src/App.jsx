@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { brush_4, brush_6, brush_8, brush_10 } from './store/reducers/brushReducer';
 import Linewidth from './Components/Toolbar/Linewidth';
 import Color from './Components/Toolbar/Color';
+import Figures from './Components/Toolbar/Figures';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
       <div className='toolbar'>
         <Linewidth/>
         <Color/>
+        <Figures/>
       </div>
       <div className='space'></div>
       <Canvas/>

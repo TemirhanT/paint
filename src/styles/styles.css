@@ -5,7 +5,7 @@
           box-sizing: border-box;
 }
 
-.App .toolbar .selector::before, .App .toolbar .color-picker::before {
+.App .toolbar .selector-wrapper::before, .App .toolbar .color-picker::before {
   content: "";
   height: 200px;
   border-right: 2px rgb(243, 243, 243) solid;
@@ -48,16 +48,22 @@
   top: 0;
   height: 220px;
 }
-.App .toolbar .selector {
+.App .toolbar .selector-wrapper {
+  height: 220px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.App .toolbar .selector-wrapper .selector {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
   width: 50px;
   height: 100px;
   background-color: #ffffff;
-}
-.App .toolbar .selector::before {
-  margin-left: 100px;
 }
 .App .space {
   width: 100%;

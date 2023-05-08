@@ -11,12 +11,14 @@ const Linewidth: FC = () => {
     const dispatch = useDispatch<AppDispatch>()
 
     return (
-        <select className = 'selector' onChange={e => dispatch(changeBrush(+e.currentTarget.value))}>
-            <option value = '4'>4 px</option>
-            <option value = '6'>6 px</option>
-            <option value = '8'>8 px</option>
-            <option value = '10'>10 px</option>
-        </select>
+        <div className="selector-wrapper">
+            <select className = 'selector' onChange={e => dispatch(changeBrush(+e.currentTarget.value))}>
+                <option value = '4'>4 px</option>
+                <option value = '6'>6 px</option>
+                <option value = '8'>8 px</option>
+                <option value = '10'>10 px</option>
+            </select>
+        </div>
     )
 }
 
