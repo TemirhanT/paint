@@ -18,7 +18,7 @@ function App() {
       <div className='toolbar'>
         <Linewidth/>
         <Color/>
-        <Figures/>
+        <Figures/> 
       </div>
       <div className='space'></div>
       <Canvas/>

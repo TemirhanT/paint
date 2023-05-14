@@ -1,11 +1,13 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import brushReducer from './reducers/brushReducer';
 import colorReducer from './reducers/colorReducer';
+import zoomReducer from './reducers/zoomReducer';
 
 
 const rootReducer = combineReducers({
     brushReducer, 
-    colorReducer
+    colorReducer,
+    zoomReducer,
 })
 
 export const store = configureStore({

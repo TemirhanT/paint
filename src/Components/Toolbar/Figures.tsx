@@ -1,13 +1,12 @@
 import { FC } from "react";
-import img from '../Assets'
 
 
 function Figures<FC>() {
 
     return ( 
-        <div>
-            <img src="../Assets/triangle.png"/>
-        </div>
+        <button>
+            <img src="/Assets/triangle.png"/>
+        </button>
      );
 }
 
