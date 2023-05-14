@@ -19,6 +19,6 @@ export default createReducer(zoomState, {
         state.currentScale += state.step
     },
     "ZOOM_OUT": function (state: IZoomState) {
-        state.currentScale -= state.step
+        if(state.currentScale > 1)  state.currentScale -= state.step
     }
 })
