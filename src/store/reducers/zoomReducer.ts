@@ -2,12 +2,16 @@ import { createAction, createReducer } from "@reduxjs/toolkit"
 
 export interface IZoomState {
     currentScale: number,
+    minScale: number,
+    maxScale: number,
     step: number,
 }
 
 const zoomState: IZoomState = {
     currentScale: 1,
-    step: 0.2,
+    minScale: 1,
+    maxScale: 8,
+    step: .5,
 }
 
 
@@ -16,9 +20,9 @@ export const myZoomOut = createAction("ZOOM_OUT");
 
 export default createReducer(zoomState, {
     "ZOOM_IN": function (state: IZoomState) {
-        state.currentScale += state.step
+        if(state.currentScale < state.maxScale) state.currentScale += state.step
     },
     "ZOOM_OUT": function (state: IZoomState) {
-        if(state.currentScale > 1)  state.currentScale -= state.step
+        if(state.currentScale > state.minScale)  state.currentScale -= state.step
     }
 })

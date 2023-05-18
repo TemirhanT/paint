@@ -8,18 +8,19 @@ function Zoom({ zoomIn, zoomOut }: any) {
     const dispatch = useDispatch<AppDispatch>();
 
     const customZoomIn = () => {
-        zoomIn(zoom.step);
-        dispatch(myZoomIn())
+        dispatch(myZoomIn());
+        zoomIn(zoom.step, 60);
     }
     const customZoomOut = () => {
-        zoomOut(zoom.step);
-        dispatch(myZoomOut())
+        dispatch(myZoomOut());
+        zoomOut(zoom.step, 60);
     }
 
     return ( 
-        <div>
+        <div className="zoom">
             <button onClick={() => customZoomIn()}>+</button>
             <button onClick={() => customZoomOut()}>-</button>
+            <span>{zoom.currentScale}</span>
         </div>
      );
 }
