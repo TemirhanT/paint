@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
 import { myZoomIn, myZoomOut } from "../../store/reducers/zoomReducer";
 
-function Zoom({ zoomIn, zoomOut }: any) {
+function Zoom({ zoomIn, zoomOut, centerView }: any) {
 
     const zoom = useSelector((state: RootState) => state.zoomReducer);
     const dispatch = useDispatch<AppDispatch>();
@@ -20,6 +20,7 @@ function Zoom({ zoomIn, zoomOut }: any) {
         <div className="zoom">
             <button onClick={() => customZoomIn()}>+</button>
             <button onClick={() => customZoomOut()}>-</button>
+            <button onClick={() => centerView()}>center</button>
             <span>{zoom.currentScale}</span>
         </div>
      );

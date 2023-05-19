@@ -14,7 +14,6 @@ const Canvas: FC = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const transformRef = useRef<ReactZoomPanPinchRef>(null)
     const [canvasCtx, setCanvasCtx] = useState<any>({});
-    const [test, setTest] = useState<any>()
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [height, setHeight] = useState<number>(window.innerHeight-300);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
@@ -25,6 +24,9 @@ const Canvas: FC = () => {
     const [difY, setDifY] = useState<number>(0);
     const [centerX, setCenterX] = useState<number>(width/2);
     const [centerY, setCenterY] = useState<number>(height/2);
+    const [cashX, setCashX] = useState<number>(0);
+    const [cashY, setCashY] = useState<number>(0);
+    
 
     // const [storage, setStorage] = useState<any[]>([]);
 
@@ -34,12 +36,12 @@ const Canvas: FC = () => {
 
     useEffect(() => {
         setCanvasCtx(canvasRef.current?.getContext('2d'));
-        setTest(canvasRef.current)
     }, [canvasRef])
     useEffect(() => {
-        window.addEventListener('keydown', () => setIsAltKeyDown(true))
+        window.addEventListener('keydown', () => setIsAltKeyDown(true))                                                                                                                                                                                                                                                                                                                                        
         return window.removeEventListener('keydown', () => setIsAltKeyDown(true))
     }, [])
+
     useEffect(() => {
         window.addEventListener('keyup', () => setIsAltKeyDown(false))
         return window.removeEventListener('keyup', () => setIsAltKeyDown(false))
@@ -47,11 +49,18 @@ const Canvas: FC = () => {
 
 
     useEffect(() => {
-        setCenterX((prev: number) => prev + difX)
+        setCashX(centerX);
+        setCenterX((prev: number) => prev + difX/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)))
     }, [difX])
     useEffect(() => {
-        setCenterY((prev: number) => prev + difY)
+        setCashY(centerY);
+        setCenterY((prev: number) => prev + difY/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)))
     }, [difY])
+
+    // useEffect(() => {
+    //     setCenterX(cashX + difX/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)));
+    //     setCenterY(cashY + difY/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)));
+    // }, [zoom.currentScale])
 
     // useEffect(() => {        
     //     const drawFromCash = (): void => {
@@ -84,6 +93,7 @@ const Canvas: FC = () => {
             setStartY(e.pageY)
             return;
         }
+        console.log(difX, e.pageX);
         canvasCtx.beginPath();
         draw(centerX + (e.pageX - centerX)/zoom.currentScale, centerY + (e.pageY - centerY)/zoom.currentScale);
         // setStorage([...storage,[e.pageX, e.pageY]]);
