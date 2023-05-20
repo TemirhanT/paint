@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import Canvas from './Components/Canvas';
+import TestCanvas from './Components/TestCanvas';
 import './styles/styles.css'
 import { useDispatch } from 'react-redux';
 import { brush_4, brush_6, brush_8, brush_10 } from './store/reducers/brushReducer';
@@ -24,7 +25,7 @@ function App() {
         А тут он находится лишь для напоминания и избежания путаницы, ведь на странице с помощью position absolute он перемещен к остальным инструментам */}
       </div>
       <div className='space'></div>
-      <Canvas/>
+      <TestCanvas/>
     </div>
   );
 }

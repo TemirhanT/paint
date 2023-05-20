@@ -9,7 +9,7 @@ import Zoom from './Toolbar/Zoom'
 
 
 
-const Canvas: FC = () => {
+const TestCanvas: FC = () => {
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const transformRef = useRef<ReactZoomPanPinchRef>(null)
@@ -18,18 +18,15 @@ const Canvas: FC = () => {
     const [height, setHeight] = useState<number>(window.innerHeight-270);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [isAltKeyDown, setIsAltKeyDown] = useState<boolean>(false);
-    const [altStartX, setAltStartX] = useState<number>(0);
-    const [altStartY, setAltStartY] = useState<number>(0);
-    const [altDifX, setAltDifX] = useState<number>(0);
-    const [altDifY, setAltDifY] = useState<number>(0);
-    const [centerX, setCenterX] = useState<number>(width/2);
-    const [centerY, setCenterY] = useState<number>(height/2);
-    const [cashX, setCashX] = useState<number>(0);
-    const [cashY, setCashY] = useState<number>(0);
-
-
     const [startX, setStartX] = useState<number>(0);
     const [startY, setStartY] = useState<number>(0);
+    const [difX, setDifX] = useState<number>(0);
+    const [difY, setDifY] = useState<number>(0);
+    const [centerX, setCenterX] = useState<number>(width/2);
+    const [centerY, setCenterY] = useState<number>(height/2);
+    const [cashCenterX, setCashCenterX] = useState<number>(0);
+    const [cashCenterY, setCashCenterY] = useState<number>(0);
+    const [staticCurrentScale, setStaticCurrentScale] = useState<number>(0)
     
 
     // const [storage, setStorage] = useState<any[]>([]);
@@ -53,13 +50,17 @@ const Canvas: FC = () => {
 
 
     useEffect(() => {
-        setCashX(centerX);
-        setCenterX((prev: number) => prev + altDifX/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)))
-    }, [altDifX])
+        setCenterX((prev: number) => prev + difX/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)))
+    }, [difX])
     useEffect(() => {
-        setCashY(centerY);
-        setCenterY((prev: number) => prev + altDifY/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)))
-    }, [altDifY])
+        setCenterY((prev: number) => prev + difY/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)))
+    }, [difY])
+
+    useEffect(() => {
+        console.log('centerX')
+        setStaticCurrentScale(zoom.currentScale)
+    }, [centerX])
+
 
     // useEffect(() => {
     //     setCenterX(cashX + difX/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)));
@@ -93,26 +94,29 @@ const Canvas: FC = () => {
         if(e.button == 2 || e.button == 1) return
         setIsMouseDown(true);
         if(isAltKeyDown) {
-            setAltStartX(e.pageX);
-            setAltStartY(e.pageY)
+            setStartX(e.pageX);
+            setStartY(e.pageY)
             return;
         }
-
-        setStartX(zoom.offsetX + e.pageX);
-        setStartY(zoom.offsetY + e.pageY);
-
-        console.log(zoom.offsetX, zoom.offsetY)
-        
+        console.log(staticCurrentScale == 1 ? centerX + (e.pageX - centerX)/zoom.currentScale : centerX + (e.pageX - centerX)/staticCurrentScale, 
+                centerX + (e.pageX - centerX)/staticCurrentScale,
+                centerX + (e.pageX - centerX)/zoom.currentScale,
+                e.pageX - centerX, 
+                e.pageX, 
+                centerX, 
+                staticCurrentScale,
+                zoom.currentScale);
         canvasCtx.beginPath();
-        draw(zoom.offsetX + e.pageX/zoom.currentScale, zoom.offsetY + (e.pageY-zoom.offsetY));
+        draw(staticCurrentScale == 1 ? (centerX + (e.pageX - centerX)/zoom.currentScale) : ((centerX + (((e.pageX - centerX)/staticCurrentScale - (e.pageX - centerX)/zoom.currentScale)) + (e.pageX - centerX)/zoom.currentScale)),
+            centerY + (e.pageY - centerY)/zoom.currentScale);
         // setStorage([...storage,[e.pageX, e.pageY]]);
     }
 
     function mouseUp(e: React.MouseEvent<HTMLCanvasElement>): void {
         setIsMouseDown(false);
         if(isAltKeyDown) {
-            setAltDifX(altStartX - e.pageX)
-            setAltDifY(altStartY - e.pageY)
+            setDifX(startX - e.pageX)
+            setDifY(startY - e.pageY)
         }
         // localStorage.setItem('path', JSON.stringify(storage))
     }
@@ -122,18 +126,18 @@ const Canvas: FC = () => {
         if(isAltKeyDown) {
             return
         }
-        draw(zoom.offsetX + startX + (e.pageX - startX)/zoom.currentScale, zoom.offsetY + startY + (e.pageY - startY)/zoom.currentScale);
+        draw(centerX + (e.pageX - centerX)/zoom.currentScale, centerY + (e.pageY - centerY)/zoom.currentScale);
         // setStorage([...storage,[e.pageX, e.pageY]]);
     }
 
     function draw(x: number, y: number): void {
-        canvasCtx.lineTo(x, (y - 270)/zoom.currentScale);
+        canvasCtx.lineTo(x, y - 270/zoom.currentScale);
         canvasCtx.stroke();
         canvasCtx.beginPath();
-        canvasCtx.arc(x, (y - 270)/zoom.currentScale, linewidth/2 , 0, Math.PI * 2);
+        canvasCtx.arc(x, y - 270/zoom.currentScale, linewidth/2 , 0, Math.PI * 2);
         canvasCtx.fill();
         canvasCtx.beginPath();
-        canvasCtx.moveTo(x, (y - 270)/zoom.currentScale);
+        canvasCtx.moveTo(x, y - 270/zoom.currentScale);
     }
 
 
@@ -172,4 +176,4 @@ const Canvas: FC = () => {
      );
 }
  
-export default Canvas;
+export default TestCanvas;

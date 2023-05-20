@@ -21,6 +21,8 @@ function Zoom({ zoomIn, zoomOut, centerView }: any) {
             <button onClick={() => customZoomIn()}>+</button>
             <button onClick={() => customZoomOut()}>-</button>
             <button onClick={() => centerView()}>center</button>
+            <button onClick={() => dispatch(myZoomIn())}>test in</button>
+            <button onClick={() => dispatch(myZoomOut())}>test out</button>
             <span>{zoom.currentScale}</span>
         </div>
      );
