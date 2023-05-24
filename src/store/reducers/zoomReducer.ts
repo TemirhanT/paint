@@ -12,7 +12,7 @@ export interface IZoomState {
 const zoomState: IZoomState = {
     offsetX: 0,
     offsetY: 270,
-    currentScale: 1.5,
+    currentScale: 1.0,
     minScale: 1,
     maxScale: 8,
     step: .5,

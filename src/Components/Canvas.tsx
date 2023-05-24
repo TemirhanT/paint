@@ -17,7 +17,6 @@ const Canvas: FC = () => {
     const observedRight = useRef<any>(null);
     const observedBottom = useRef<any>(null);
     const observedLeft = useRef<any>(null);
-    const test = useRef<any>(null);
     const transformRef = useRef<ReactZoomPanPinchRef>(null);
     const [canvasCtx, setCanvasCtx] = useState<any>({});
     const [width, setWidth] = useState<number>(window.innerWidth);
@@ -48,26 +47,31 @@ const Canvas: FC = () => {
 
 
 
+
     useEffect(() => {
-        const callback = (): void => {
-            setIsAltKeyDown(false)
-            setButton("null")
+        const callback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver): void => {
+            if(entries[0].isIntersecting) {
+                setIsAltKeyDown(false)
+                setButton("null")
+                console.log(zoom.currentScale)
+            }
         }
         let options = {
             root: document.querySelector(".canvas-wrapper"),
             rootMargin: "0px",
             threshold: 0.0,
           };
+
         observer.current = new IntersectionObserver(callback, options);
-        if(observedTop.current && observer.current) observer.current.observe(observedTop.current)    
+        if(observedTop.current && observer.current) observer.current.observe(observedTop.current)   
         // if(observedRight.current && observer.current) observer.current.observe(observedRight.current)   
         // if(observedBottom.current && observer.current) observer.current.observe(observedBottom.current)   
         // if(observedLeft.current && observer.current) observer.current.observe(observedLeft.current) 
     }, [])
 
+
     useEffect(() => {
         window.addEventListener('keydown', (e) => {if(e.altKey) setIsAltKeyDown(true)}); 
-        console.log("tata")
         return window.removeEventListener('keydown', (e) => {if(e.altKey) setIsAltKeyDown(true)})
     }, [])
 
@@ -134,6 +138,7 @@ const Canvas: FC = () => {
             setStartY(e.pageY)
             return;
         }
+        console.log(centerX, centerY)
         canvasCtx.beginPath()
         draw(centerX + (e.pageX - width/2)/zoom.currentScale,
              centerY + (e.pageY - height/2)/zoom.currentScale);
@@ -154,6 +159,7 @@ const Canvas: FC = () => {
     function mouseMove(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(!isMouseDown) return
         if(isAltKeyDown && isAltKeyDownBeforeMouse) {
+            console.log(".")
             setIsAltKeyWasDown(true)
             return
         }
@@ -221,7 +227,7 @@ const Canvas: FC = () => {
                 </React.Fragment>
                 )}
             </TransformWrapper>
-            <button onClick={() => setButton("Alt")}>dfshg</button>
+            <button onClick={() => setButton("Alt")}>dfshjfjfgdjgfjfgnjgdfg</button>
         </div>
      );
 }
