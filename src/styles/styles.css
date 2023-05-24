@@ -75,6 +75,33 @@
   top: 100px;
   left: 500px;
 }
-.App .canvas {
+.App .canvas-wrapper .canvas {
   background-color: #fff;
+}
+.App .canvas-wrapper .observed-top {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: red;
+}
+.App .canvas-wrapper .observed-right {
+  position: absolute;
+  right: 0;
+  width: 2px;
+  height: calc(100vh - 270px);
+  background-color: red;
+}
+.App .canvas-wrapper .observed-bottom {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: red;
+}
+.App .canvas-wrapper .observed-left {
+  position: absolute;
+  left: 0;
+  width: 2px;
+  height: calc(100vh - 270px);
+  background-color: red;
 }

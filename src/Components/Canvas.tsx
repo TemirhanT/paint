@@ -1,9 +1,9 @@
-import React, {FC} from 'react';
+import React, {FC, useLayoutEffect} from 'react';
 import { useRef, useEffect, useState} from "react";
 import { useSelector } from 'react-redux/es/exports';
 import { AppDispatch, RootState } from '../store/store';
 import { useDispatch } from 'react-redux';
-import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
+import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef, useTransformEffect, useTransformContext } from "react-zoom-pan-pinch";
 import { IZoomState } from '../store/reducers/zoomReducer';
 import Zoom from './Toolbar/Zoom'
 
@@ -12,26 +12,30 @@ import Zoom from './Toolbar/Zoom'
 const Canvas: FC = () => {
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const transformRef = useRef<ReactZoomPanPinchRef>(null)
+    const observer = useRef<any>(null);
+    const observedTop = useRef<any>(null);
+    const observedRight = useRef<any>(null);
+    const observedBottom = useRef<any>(null);
+    const observedLeft = useRef<any>(null);
+    const test = useRef<any>(null);
+    const transformRef = useRef<ReactZoomPanPinchRef>(null);
     const [canvasCtx, setCanvasCtx] = useState<any>({});
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [height, setHeight] = useState<number>(window.innerHeight-270);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [isAltKeyDown, setIsAltKeyDown] = useState<boolean>(false);
-    const [altStartX, setAltStartX] = useState<number>(0);
-    const [altStartY, setAltStartY] = useState<number>(0);
-    const [altDifX, setAltDifX] = useState<number>(0);
-    const [altDifY, setAltDifY] = useState<number>(0);
-    const [centerX, setCenterX] = useState<number>(width/2);
-    const [centerY, setCenterY] = useState<number>(height/2);
-    const [cashX, setCashX] = useState<number>(0);
-    const [cashY, setCashY] = useState<number>(0);
-
-
+    const [isAltKeyWasDown, setIsAltKeyWasDown] = useState<boolean>(false)
+    const [isAltKeyDownBeforeMouse, setIsAltKeyDownBeforeMouse] = useState<boolean>(false)
     const [startX, setStartX] = useState<number>(0);
     const [startY, setStartY] = useState<number>(0);
-    
+    const [difX, setDifX] = useState<number>(0);
+    const [difY, setDifY] = useState<number>(0);
+    const [centerX, setCenterX] = useState<number>(width/2);
+    const [centerY, setCenterY] = useState<number>(height/2);
+    const [button, setButton] = useState<string>("Alt");
 
+
+    
     // const [storage, setStorage] = useState<any[]>([]);
 
     const linewidth: number = useSelector((state: RootState) => state.brushReducer.linewidth);
@@ -41,25 +45,56 @@ const Canvas: FC = () => {
     useEffect(() => {
         setCanvasCtx(canvasRef.current?.getContext('2d'));
     }, [canvasRef])
+
+
+
     useEffect(() => {
-        window.addEventListener('keydown', () => setIsAltKeyDown(true))                                                                                                                                                                                                                                                                                                                                        
-        return window.removeEventListener('keydown', () => setIsAltKeyDown(true))
+        const callback = (): void => {
+            setIsAltKeyDown(false)
+            setButton("null")
+        }
+        let options = {
+            root: document.querySelector(".canvas-wrapper"),
+            rootMargin: "0px",
+            threshold: 0.0,
+          };
+        observer.current = new IntersectionObserver(callback, options);
+        if(observedTop.current && observer.current) observer.current.observe(observedTop.current)    
+        // if(observedRight.current && observer.current) observer.current.observe(observedRight.current)   
+        // if(observedBottom.current && observer.current) observer.current.observe(observedBottom.current)   
+        // if(observedLeft.current && observer.current) observer.current.observe(observedLeft.current) 
     }, [])
 
     useEffect(() => {
-        window.addEventListener('keyup', () => setIsAltKeyDown(false))
-        return window.removeEventListener('keyup', () => setIsAltKeyDown(false))
+        window.addEventListener('keydown', (e) => {if(e.altKey) setIsAltKeyDown(true)}); 
+        console.log("tata")
+        return window.removeEventListener('keydown', (e) => {if(e.altKey) setIsAltKeyDown(true)})
+    }, [])
+
+    useEffect(() => {
+        const altKeyUp = () => {
+            setButton("Alt")
+            setIsAltKeyDown(false)
+        }
+
+        window.addEventListener('keyup', () => altKeyUp())
+        return window.removeEventListener('keyup', () => altKeyUp())
     }, [])
 
 
     useEffect(() => {
-        setCashX(centerX);
-        setCenterX((prev: number) => prev + altDifX/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)))
-    }, [altDifX])
+        setCenterX((prev: number) => prev + difX/zoom.currentScale)
+    }, [difX])
     useEffect(() => {
-        setCashY(centerY);
-        setCenterY((prev: number) => prev + altDifY/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)))
-    }, [altDifY])
+        setCenterY((prev: number) => prev + difY/zoom.currentScale)
+    }, [difY])
+    useEffect(() => {
+        if(zoom.currentScale == 1) {
+            setCenterX(width/2)
+            setCenterY(height/2)
+        }
+    }, [zoom.currentScale])
+
 
     // useEffect(() => {
     //     setCenterX(cashX + difX/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)));
@@ -89,64 +124,78 @@ const Canvas: FC = () => {
     canvasCtx.strokeStyle = color;
     canvasCtx.lineWidth = linewidth;
 
+
     function mouseDown(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(e.button == 2 || e.button == 1) return
         setIsMouseDown(true);
         if(isAltKeyDown) {
-            setAltStartX(e.pageX);
-            setAltStartY(e.pageY)
+            setIsAltKeyDownBeforeMouse(true)
+            setStartX(e.pageX);
+            setStartY(e.pageY)
             return;
         }
-
-        setStartX(zoom.offsetX + e.pageX);
-        setStartY(zoom.offsetY + e.pageY);
-
-        console.log(zoom.offsetX, zoom.offsetY)
-        
-        canvasCtx.beginPath();
-        draw(zoom.offsetX + e.pageX/zoom.currentScale, zoom.offsetY + (e.pageY-zoom.offsetY));
+        canvasCtx.beginPath()
+        draw(centerX + (e.pageX - width/2)/zoom.currentScale,
+             centerY + (e.pageY - height/2)/zoom.currentScale);
         // setStorage([...storage,[e.pageX, e.pageY]]);
     }
 
     function mouseUp(e: React.MouseEvent<HTMLCanvasElement>): void {
-        setIsMouseDown(false);
-        if(isAltKeyDown) {
-            setAltDifX(altStartX - e.pageX)
-            setAltDifY(altStartY - e.pageY)
+        if(isAltKeyWasDown && isAltKeyDownBeforeMouse) {
+            setDifX(startX - e.pageX)
+            setDifY(startY - e.pageY)
+            setIsAltKeyWasDown(false)
+            setIsAltKeyDownBeforeMouse(false)
         }
+        setIsMouseDown(false);
         // localStorage.setItem('path', JSON.stringify(storage))
     }
 
     function mouseMove(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(!isMouseDown) return
-        if(isAltKeyDown) {
+        if(isAltKeyDown && isAltKeyDownBeforeMouse) {
+            setIsAltKeyWasDown(true)
             return
         }
-        draw(zoom.offsetX + startX + (e.pageX - startX)/zoom.currentScale, zoom.offsetY + startY + (e.pageY - startY)/zoom.currentScale);
+        if(isAltKeyWasDown && !isAltKeyDown && isAltKeyDownBeforeMouse) {
+            setDifX(startX - e.pageX)
+            setDifY(startY - e.pageY)
+            setIsAltKeyWasDown(false)
+            setIsAltKeyDownBeforeMouse(false)
+            canvasCtx.beginPath()
+            return
+        }
+        draw(centerX + (e.pageX - width/2)/zoom.currentScale,
+             centerY + (e.pageY - height/2)/zoom.currentScale);
         // setStorage([...storage,[e.pageX, e.pageY]]);
     }
 
     function draw(x: number, y: number): void {
-        canvasCtx.lineTo(x, (y - 270)/zoom.currentScale);
+        canvasCtx.lineTo(x, y - 270/zoom.currentScale);
         canvasCtx.stroke();
         canvasCtx.beginPath();
-        canvasCtx.arc(x, (y - 270)/zoom.currentScale, linewidth/2 , 0, Math.PI * 2);
+        canvasCtx.arc(x, y - 270/zoom.currentScale, linewidth/2 , 0, Math.PI * 2);
         canvasCtx.fill();
         canvasCtx.beginPath();
-        canvasCtx.moveTo(x, (y - 270)/zoom.currentScale);
+        canvasCtx.moveTo(x, y - 270/zoom.currentScale);
     }
 
+    // useTransformEffect(({ state, instance }) => {
+    //     console.log(state); // { previousScale: 1, scale: 1, positionX: 0, positionY: 0 }
+    // });
 
 
     return ( 
-        <div className='canvas-wrapper'>
+        <div ref={observer} className='canvas-wrapper'>
             <TransformWrapper
             ref={transformRef}
             initialScale={zoom.currentScale}
             minScale={zoom.minScale}
             maxScale={zoom.maxScale}
-            panning={{activationKeys: ["Alt"], velocityDisabled: true}}
+            panning={{activationKeys: [button], velocityDisabled: true}}
             disablePadding={true}
+            wheel={{disabled: true}}
+            doubleClick={{disabled: true}}
             >
                 {(utils: any) => (
                 <React.Fragment>
@@ -164,10 +213,15 @@ const Canvas: FC = () => {
                                 onMouseUp={(e) => mouseUp(e)}
                                 onMouseLeave={(e) => mouseUp(e)}
                             />
+                            <div ref={observedTop} className='observed-top'/>
+                            <div ref={observedRight} className='observed-right'/>
+                            <div ref={observedBottom} className='observed-bottom'/>
+                            <div ref={observedLeft} className='observed-left'/>
                     </TransformComponent>
                 </React.Fragment>
                 )}
             </TransformWrapper>
+            <button onClick={() => setButton("Alt")}>dfshg</button>
         </div>
      );
 }

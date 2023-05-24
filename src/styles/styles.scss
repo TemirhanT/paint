@@ -19,30 +19,46 @@ $second-color: rgb(243, 243, 243);
     justify-content: center;
     align-items: center;
     background-color: #ffffff;
+
+
+
     .toolbar {
         display: flex;
         align-items: center;
         margin: 0 0 20px 0;
         width: 100%;
         height: 230px;
+
+
+
         .color-picker {
             display: flex;
             align-items: center;
             width: 300px;
+
+
 
             .sketch-picker {
                 top: 0;
                 height: 220px;
             }
         }
+
+
+
         .color-picker::before {
             @extend %before
         }
+
+
 
         .selector-wrapper {
             height: 220px;
             display: flex;
             align-items: center;
+
+
+
             .selector {
                 align-items: center;
                 width: 50px; 
@@ -50,15 +66,25 @@ $second-color: rgb(243, 243, 243);
                 background-color: #ffffff;
             }
         }
+
+
+        
         .selector-wrapper::before {
             @extend %before
         }
     }
+
+
+
+
     .space {
         width: 100%;
         height: 20px;
         background-color: $second-color;
     }
+
+
+
 
     .zoom {
         position: absolute;
@@ -66,7 +92,39 @@ $second-color: rgb(243, 243, 243);
         left: 500px;
     }
 
-    .canvas {
+
+
+
+    .canvas-wrapper {
+        .canvas {
             background-color: #fff;
+        }
+        .observed-top {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: red;
+        }
+        .observed-right {
+            position: absolute;
+            right: 0;
+            width: 2px;
+            height: calc(100vh - 270px);
+            background-color: red;
+        }
+        .observed-bottom {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background-color: red;
+        }
+        .observed-left {
+            position: absolute;
+            left: 0;
+            width: 2px;
+            height: calc(100vh - 270px);
+            background-color: red;
+        }
     }
 }
