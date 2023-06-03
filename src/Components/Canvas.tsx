@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef, useTransformEffect, useTransformContext } from "react-zoom-pan-pinch";
 import { IZoomState } from '../store/reducers/zoomReducer';
 import Zoom from './Toolbar/Zoom'
+import { InView, useInView } from 'react-intersection-observer';
 
 
 
@@ -32,14 +33,31 @@ const Canvas: FC = () => {
     const [centerX, setCenterX] = useState<number>(width/2);
     const [centerY, setCenterY] = useState<number>(height/2);
     const [button, setButton] = useState<string>("Alt");
+    const [test, setTest] = useState<string>('1');
 
 
-    
-    // const [storage, setStorage] = useState<any[]>([]);
+
+    const options = {
+        threshold: 0
+    }
+    const [topRef, topInView, topEntry] = useInView(options);
+    const [rightRef, rightInView, rightEntry] = useInView(options);
+    const [bottomRef, bottomInView, bottomEntry] = useInView(options);
+    const [leftRef, leftInView, leftEntry] = useInView(options);
+    const [prevScale, setPrevScale] = useState<number>(1)
+
+
+
 
     const linewidth: number = useSelector((state: RootState) => state.brushReducer.linewidth);
     const color: string = useSelector((state: RootState) => state.colorReducer.color);
     const zoom: IZoomState = useSelector((state: RootState) => state.zoomReducer);
+
+
+    canvasCtx.fillStyle = color;
+    canvasCtx.strokeStyle = color;
+    canvasCtx.lineWidth = linewidth;
+
 
     useEffect(() => {
         setCanvasCtx(canvasRef.current?.getContext('2d'));
@@ -47,33 +65,34 @@ const Canvas: FC = () => {
 
 
 
+    // useEffect(() => {
+    //     const callback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver): void => {
+    //         if(entries[0].isIntersecting) {
+    //             setIsMouseDown(false)
+    //             setCenterY(height/(2*zoom.currentScale))
+    //             setButton("null")
+    //             console.log('observe')
+    //         }
+    //     }
+    //     let options = {
+    //         root: document.querySelector(".canvas-wrapper"),
+    //         rootMargin: "0px",
+    //         threshold: 0.0,
+    //       };
 
-    useEffect(() => {
-        const callback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver): void => {
-            if(entries[0].isIntersecting) {
-                setIsAltKeyDown(false)
-                setButton("null")
-                console.log(zoom.currentScale)
-            }
-        }
-        let options = {
-            root: document.querySelector(".canvas-wrapper"),
-            rootMargin: "0px",
-            threshold: 0.0,
-          };
-
-        observer.current = new IntersectionObserver(callback, options);
-        if(observedTop.current && observer.current) observer.current.observe(observedTop.current)   
-        // if(observedRight.current && observer.current) observer.current.observe(observedRight.current)   
-        // if(observedBottom.current && observer.current) observer.current.observe(observedBottom.current)   
-        // if(observedLeft.current && observer.current) observer.current.observe(observedLeft.current) 
-    }, [])
+    //     observer.current = new IntersectionObserver(callback, options);
+    //     if(observedTop.current && observer.current) observer.current.observe(observedTop.current)   
+    //     // if(observedRight.current && observer.current) observer.current.observe(observedRight.current)   
+    //     // if(observedBottom.current && observer.current) observer.current.observe(observedBottom.current)   
+    //     // if(observedLeft.current && observer.current) observer.current.observe(observedLeft.current) 
+    // }, [])
 
 
     useEffect(() => {
         window.addEventListener('keydown', (e) => {if(e.altKey) setIsAltKeyDown(true)}); 
         return window.removeEventListener('keydown', (e) => {if(e.altKey) setIsAltKeyDown(true)})
     }, [])
+
 
     useEffect(() => {
         const altKeyUp = () => {
@@ -87,46 +106,40 @@ const Canvas: FC = () => {
 
 
     useEffect(() => {
-        setCenterX((prev: number) => prev + difX/zoom.currentScale)
+        setCenterX((prev: number): number => {
+            if(leftEntry?.isIntersecting) return width/(2*zoom.currentScale)
+            if(rightEntry?.isIntersecting) return width - width/(2*zoom.currentScale)
+            return prev + difX / zoom.currentScale;
+        })
     }, [difX])
+
+
     useEffect(() => {
-        setCenterY((prev: number) => prev + difY/zoom.currentScale)
+        setCenterY((prev: number): number => {
+            if(topEntry?.isIntersecting) return height/(2*zoom.currentScale)
+            if(bottomEntry?.isIntersecting) return height - height/(2*zoom.currentScale)
+            return prev + difY / zoom.currentScale;
+        })
     }, [difY])
+
+
     useEffect(() => {
-        if(zoom.currentScale == 1) {
-            setCenterX(width/2)
-            setCenterY(height/2)
-        }
+        setCenterX((prev: number): number => {
+            if(zoom.currentScale == 1) return width/2
+            if(leftEntry?.isIntersecting && prevScale !== 1 && zoom.currentScale < prevScale) return width/(2*zoom.currentScale)
+            if(rightEntry?.isIntersecting && prevScale !== 1 && zoom.currentScale < prevScale) return width - width/(2*zoom.currentScale)
+            return prev
+        })
+        setCenterY((prev: number): number => {
+            if(zoom.currentScale == 1) return height/2
+            if(topEntry?.isIntersecting && prevScale !== 1 && zoom.currentScale < prevScale) return height/(2*zoom.currentScale)
+            if(bottomEntry?.isIntersecting && prevScale !== 1 && zoom.currentScale < prevScale) return height - height/(2*zoom.currentScale)
+            return prev
+        })
+        setPrevScale(zoom.currentScale)
+        console.log(prevScale)
     }, [zoom.currentScale])
 
-
-    // useEffect(() => {
-    //     setCenterX(cashX + difX/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)));
-    //     setCenterY(cashY + difY/((zoom.currentScale - 1) == 0 ? 1 : (zoom.currentScale - 1)));
-    // }, [zoom.currentScale])
-
-    // useEffect(() => {        
-    //     const drawFromCash = (): void => {
-    //         const path: any[] = JSON.parse(localStorage.getItem('path') || '')
-    //         for(let coords of path) {
-    //             setTimeout(() =>draw(coords[0], coords[1]), )
-    //         }
-    //     }
-
-    //     const updateWindowDimensions = (): void => {
-    //         setWidth(window.innerWidth);
-    //         setHeight(window.innerHeight - 320);
-    //         drawFromCash()
-    //     }        
-        
-    //     window.addEventListener('resize', updateWindowDimensions);
-
-    //     return (): void => window.removeEventListener('resize', updateWindowDimensions);
-    // }, [])
-
-    canvasCtx.fillStyle = color;
-    canvasCtx.strokeStyle = color;
-    canvasCtx.lineWidth = linewidth;
 
 
     function mouseDown(e: React.MouseEvent<HTMLCanvasElement>): void {
@@ -135,14 +148,13 @@ const Canvas: FC = () => {
         if(isAltKeyDown) {
             setIsAltKeyDownBeforeMouse(true)
             setStartX(e.pageX);
-            setStartY(e.pageY)
+            setStartY(e.pageY);
             return;
         }
-        console.log(centerX, centerY)
+        console.log(e.pageX, e.pageY, centerX, centerY)
         canvasCtx.beginPath()
         draw(centerX + (e.pageX - width/2)/zoom.currentScale,
              centerY + (e.pageY - height/2)/zoom.currentScale);
-        // setStorage([...storage,[e.pageX, e.pageY]]);
     }
 
     function mouseUp(e: React.MouseEvent<HTMLCanvasElement>): void {
@@ -153,27 +165,28 @@ const Canvas: FC = () => {
             setIsAltKeyDownBeforeMouse(false)
         }
         setIsMouseDown(false);
-        // localStorage.setItem('path', JSON.stringify(storage))
     }
 
     function mouseMove(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(!isMouseDown) return
+
         if(isAltKeyDown && isAltKeyDownBeforeMouse) {
-            console.log(".")
             setIsAltKeyWasDown(true)
             return
         }
+
         if(isAltKeyWasDown && !isAltKeyDown && isAltKeyDownBeforeMouse) {
             setDifX(startX - e.pageX)
             setDifY(startY - e.pageY)
             setIsAltKeyWasDown(false)
             setIsAltKeyDownBeforeMouse(false)
+            setIsMouseDown(false)
             canvasCtx.beginPath()
             return
         }
+
         draw(centerX + (e.pageX - width/2)/zoom.currentScale,
              centerY + (e.pageY - height/2)/zoom.currentScale);
-        // setStorage([...storage,[e.pageX, e.pageY]]);
     }
 
     function draw(x: number, y: number): void {
@@ -185,10 +198,6 @@ const Canvas: FC = () => {
         canvasCtx.beginPath();
         canvasCtx.moveTo(x, y - 270/zoom.currentScale);
     }
-
-    // useTransformEffect(({ state, instance }) => {
-    //     console.log(state); // { previousScale: 1, scale: 1, positionX: 0, positionY: 0 }
-    // });
 
 
     return ( 
@@ -219,10 +228,10 @@ const Canvas: FC = () => {
                                 onMouseUp={(e) => mouseUp(e)}
                                 onMouseLeave={(e) => mouseUp(e)}
                             />
-                            <div ref={observedTop} className='observed-top'/>
-                            <div ref={observedRight} className='observed-right'/>
-                            <div ref={observedBottom} className='observed-bottom'/>
-                            <div ref={observedLeft} className='observed-left'/>
+                            <div ref={topRef} className='observed-top'/>
+                            <div ref={rightRef} className='observed-right'/>
+                            <div ref={bottomRef} className='observed-bottom'/>
+                            <div ref={leftRef} className='observed-left'/>
                     </TransformComponent>
                 </React.Fragment>
                 )}

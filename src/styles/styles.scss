@@ -102,13 +102,13 @@ $second-color: rgb(243, 243, 243);
         .observed-top {
             position: absolute;
             width: 100%;
-            height: 2px;
+            height: .1px;
             background-color: red;
         }
         .observed-right {
             position: absolute;
             right: 0;
-            width: 2px;
+            width: .1px;
             height: calc(100vh - 270px);
             background-color: red;
         }
@@ -116,13 +116,13 @@ $second-color: rgb(243, 243, 243);
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 2px;
+            height: .1px;
             background-color: red;
         }
         .observed-left {
             position: absolute;
             left: 0;
-            width: 2px;
+            width: .1px;
             height: calc(100vh - 270px);
             background-color: red;
         }
