@@ -3,6 +3,7 @@ import brushReducer from './reducers/brushReducer';
 import colorReducer from './reducers/colorReducer';
 import zoomReducer from './reducers/zoomReducer';
 import canvasReducer from './reducers/canvasReducer';
+import figureReducer from './reducers/figureReducer';
 
 
 const rootReducer = combineReducers({
@@ -10,6 +11,7 @@ const rootReducer = combineReducers({
     brushReducer, 
     colorReducer,
     zoomReducer,
+    figureReducer
 })
 
 export const store = configureStore({
