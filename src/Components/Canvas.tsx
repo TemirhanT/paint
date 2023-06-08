@@ -7,19 +7,12 @@ import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef, useTransfor
 import { IZoomState } from '../store/reducers/zoomReducer';
 import Zoom from './Toolbar/Zoom'
 import { InView, useInView } from 'react-intersection-observer';
+import { setCanvasCtx } from '../store/reducers/canvasReducer';
 
 
 
 const Canvas: FC = () => {
 
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const observer = useRef<any>(null);
-    const observedTop = useRef<any>(null);
-    const observedRight = useRef<any>(null);
-    const observedBottom = useRef<any>(null);
-    const observedLeft = useRef<any>(null);
-    const transformRef = useRef<ReactZoomPanPinchRef>(null);
-    const [canvasCtx, setCanvasCtx] = useState<any>({});
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [height, setHeight] = useState<number>(window.innerHeight-270);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
@@ -33,9 +26,6 @@ const Canvas: FC = () => {
     const [centerX, setCenterX] = useState<number>(width/2);
     const [centerY, setCenterY] = useState<number>(height/2);
     const [button, setButton] = useState<string>("Alt");
-    const [test, setTest] = useState<string>('1');
-
-
 
     const options = {
         threshold: 0
@@ -45,47 +35,37 @@ const Canvas: FC = () => {
     const [bottomRef, bottomInView, bottomEntry] = useInView(options);
     const [leftRef, leftInView, leftEntry] = useInView(options);
     const [prevScale, setPrevScale] = useState<number>(1)
+    const [delay, setDelay] = useState<boolean>(false)
 
 
 
-
-    const linewidth: number = useSelector((state: RootState) => state.brushReducer.linewidth);
-    const color: string = useSelector((state: RootState) => state.colorReducer.color);
-    const zoom: IZoomState = useSelector((state: RootState) => state.zoomReducer);
+    const transformRef = useRef<ReactZoomPanPinchRef>(null);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
 
-    canvasCtx.fillStyle = color;
-    canvasCtx.strokeStyle = color;
-    canvasCtx.lineWidth = linewidth;
+
+    const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx);
+    const linewidth = useSelector((state: RootState) => state.brushReducer.linewidth);
+    const color = useSelector((state: RootState) => state.colorReducer.color);
+    const zoom = useSelector((state: RootState) => state.zoomReducer);
+
+    const dispatch = useDispatch()
+
+    
 
 
     useEffect(() => {
-        setCanvasCtx(canvasRef.current?.getContext('2d'));
+        dispatch(setCanvasCtx(canvasRef.current?.getContext('2d')));
     }, [canvasRef])
 
 
-
-    // useEffect(() => {
-    //     const callback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver): void => {
-    //         if(entries[0].isIntersecting) {
-    //             setIsMouseDown(false)
-    //             setCenterY(height/(2*zoom.currentScale))
-    //             setButton("null")
-    //             console.log('observe')
-    //         }
-    //     }
-    //     let options = {
-    //         root: document.querySelector(".canvas-wrapper"),
-    //         rootMargin: "0px",
-    //         threshold: 0.0,
-    //       };
-
-    //     observer.current = new IntersectionObserver(callback, options);
-    //     if(observedTop.current && observer.current) observer.current.observe(observedTop.current)   
-    //     // if(observedRight.current && observer.current) observer.current.observe(observedRight.current)   
-    //     // if(observedBottom.current && observer.current) observer.current.observe(observedBottom.current)   
-    //     // if(observedLeft.current && observer.current) observer.current.observe(observedLeft.current) 
-    // }, [])
+    useEffect(() => {
+        if(canvasCtx) {
+            canvasCtx.fillStyle = color;
+            canvasCtx.strokeStyle = color;
+            canvasCtx.lineWidth = linewidth;
+        }
+    }, [canvasCtx, linewidth, color])
 
 
     useEffect(() => {
@@ -124,6 +104,17 @@ const Canvas: FC = () => {
 
 
     useEffect(() => {
+        const timeout = setTimeout(() => {
+            setDelay(!delay)
+        }, 100)
+
+        return () => {
+            clearTimeout(timeout)
+        }
+    }, [zoom.currentScale])
+
+
+    useEffect(() => {
         setCenterX((prev: number): number => {
             if(zoom.currentScale == 1) return width/2
             if(leftEntry?.isIntersecting && prevScale !== 1 && zoom.currentScale < prevScale) return width/(2*zoom.currentScale)
@@ -136,9 +127,9 @@ const Canvas: FC = () => {
             if(bottomEntry?.isIntersecting && prevScale !== 1 && zoom.currentScale < prevScale) return height - height/(2*zoom.currentScale)
             return prev
         })
+        console.log(topEntry?.isIntersecting)
         setPrevScale(zoom.currentScale)
-        console.log(prevScale)
-    }, [zoom.currentScale])
+    }, [delay])
 
 
 
@@ -201,43 +192,40 @@ const Canvas: FC = () => {
 
 
     return ( 
-        <div ref={observer} className='canvas-wrapper'>
-            <TransformWrapper
-            ref={transformRef}
-            initialScale={zoom.currentScale}
-            minScale={zoom.minScale}
-            maxScale={zoom.maxScale}
-            panning={{activationKeys: [button], velocityDisabled: true}}
-            disablePadding={true}
-            wheel={{disabled: true}}
-            doubleClick={{disabled: true}}
-            >
-                {(utils: any) => (
-                <React.Fragment>
-                    <Zoom {...utils}/>
-                    <TransformComponent>
-                            <canvas 
-                                ref={canvasRef} 
-                                role='img'
-                                style={{display: 'block'}} 
-                                height={height} 
-                                width={width} 
-                                className="canvas" 
-                                onMouseDown={(e) => mouseDown(e)}
-                                onMouseMove={(e) => mouseMove(e)}
-                                onMouseUp={(e) => mouseUp(e)}
-                                onMouseLeave={(e) => mouseUp(e)}
-                            />
-                            <div ref={topRef} className='observed-top'/>
-                            <div ref={rightRef} className='observed-right'/>
-                            <div ref={bottomRef} className='observed-bottom'/>
-                            <div ref={leftRef} className='observed-left'/>
-                    </TransformComponent>
-                </React.Fragment>
-                )}
-            </TransformWrapper>
-            <button onClick={() => setButton("Alt")}>dfshjfjfgdjgfjfgnjgdfg</button>
-        </div>
+        <TransformWrapper
+        ref={transformRef}
+        initialScale={zoom.currentScale}
+        minScale={zoom.minScale}
+        maxScale={zoom.maxScale}
+        panning={{activationKeys: [button], velocityDisabled: true}}
+        disablePadding={true}
+        wheel={{disabled: true}}
+        doubleClick={{disabled: true}}
+        >
+            {(utils: any) => (
+            <React.Fragment>
+                <Zoom {...utils}/>
+                <TransformComponent>
+                        <canvas 
+                            ref={canvasRef} 
+                            role='img'
+                            style={{display: 'block'}} 
+                            height={height} 
+                            width={width} 
+                            className="canvas" 
+                            onMouseDown={(e) => mouseDown(e)}
+                            onMouseMove={(e) => mouseMove(e)}
+                            onMouseUp={(e) => mouseUp(e)}
+                            onMouseLeave={(e) => mouseUp(e)}
+                        />
+                        <div ref={topRef} className='observed-top'/>
+                        <div ref={rightRef} className='observed-right'/>
+                        <div ref={bottomRef} className='observed-bottom'/>
+                        <div ref={leftRef} className='observed-left'/>
+                </TransformComponent>
+            </React.Fragment>
+            )}
+        </TransformWrapper>
      );
 }
  

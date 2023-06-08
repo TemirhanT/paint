@@ -10,7 +10,7 @@ const brushState: IBrushState = {
 
 
 
-export const changeBrush = createAction<number, string>("CHANGE_BRUSH")
+export const changeBrush = createAction<number>("CHANGE_BRUSH")
 
 
 export default createReducer(brushState, {
