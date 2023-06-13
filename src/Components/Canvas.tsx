@@ -7,7 +7,8 @@ import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef, useTransfor
 import { IZoomState } from '../store/reducers/zoomReducer';
 import Zoom from './Toolbar/Zoom'
 import { InView, useInView } from 'react-intersection-observer';
-import { setCanvasCtx, setStartX, setStartY } from '../store/reducers/canvasReducer';
+import { setCanvasCtx } from '../store/reducers/canvasReducer';
+import { pushCash, setFigureStartX, setFigureStartY } from '../store/reducers/figureReducer';
 
 
 
@@ -15,6 +16,8 @@ const Canvas: FC = () => {
 
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [height, setHeight] = useState<number>(window.innerHeight-270);
+    const [startX, setStartX] = useState<number>(0);
+    const [startY, setStartY] = useState<number>(0);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [isAltKeyDown, setIsAltKeyDown] = useState<boolean>(false);
     const [isAltKeyWasDown, setIsAltKeyWasDown] = useState<boolean>(false)
@@ -32,8 +35,9 @@ const Canvas: FC = () => {
     const [rightRef, rightInView, rightEntry] = useInView(options);
     const [bottomRef, bottomInView, bottomEntry] = useInView(options);
     const [leftRef, leftInView, leftEntry] = useInView(options);
-    const [prevScale, setPrevScale] = useState<number>(1)
-    const [delay, setDelay] = useState<boolean>(false)
+    const [prevScale, setPrevScale] = useState<number>(1);
+    const [delay, setDelay] = useState<boolean>(false);
+
 
 
 
@@ -43,9 +47,7 @@ const Canvas: FC = () => {
 
 
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx);
-    const startX = useSelector((state: RootState) => state.canvasReducer.startX);
-    const startY = useSelector((state: RootState) => state.canvasReducer.startY);
-    const figure = useSelector((state: RootState) => state.figureReducer.figure);
+    const figureState = useSelector((state: RootState) => state.figureReducer);
     const linewidth = useSelector((state: RootState) => state.brushReducer.linewidth);
     const color = useSelector((state: RootState) => state.colorReducer.color);
     const zoom = useSelector((state: RootState) => state.zoomReducer);
@@ -128,9 +130,10 @@ const Canvas: FC = () => {
             if(bottomEntry?.isIntersecting && zoom.currentScale < prevScale) return height - height/(2*zoom.currentScale)
             return prev
         })
-        console.log(topEntry?.isIntersecting)
         setPrevScale(zoom.currentScale)
     }, [delay])
+
+
 
 
 
@@ -139,16 +142,20 @@ const Canvas: FC = () => {
         setIsMouseDown(true);
         if(isAltKeyDown) {
             setIsAltKeyDownBeforeMouse(true)
-            dispatch(setStartX(e.pageX));
-            dispatch(setStartY(e.pageY));
+            setStartX(e.pageX);
+            setStartY(e.pageY);
             return;
         }
-        canvasCtx.beginPath()
+        canvasCtx?.beginPath()
+        dispatch(setFigureStartX(e.pageX));
+        dispatch(setFigureStartY(e.pageY));
         draw(centerX + (e.pageX - width/2)/zoom.currentScale,
              centerY + (e.pageY - height/2)/zoom.currentScale);
     }
 
-    function mouseUp(e: React.MouseEvent<HTMLCanvasElement>): void {
+
+
+    function mouseLeave(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(isAltKeyWasDown && isAltKeyDownBeforeMouse) {
             setDifX(startX - e.pageX)
             setDifY(startY - e.pageY)
@@ -156,7 +163,29 @@ const Canvas: FC = () => {
             setIsAltKeyDownBeforeMouse(false)
         }
         setIsMouseDown(false);
+        canvasCtx.beginPath()
     }
+
+
+    function mouseUp(e: React.MouseEvent<HTMLCanvasElement>): void {
+        mouseLeave(e)
+
+        if(figureState.figureType == 'line') {
+            dispatch(pushCash(null))
+        }  else {
+            dispatch(pushCash([
+                figureState.figureType, 
+                centerX + (e.pageX - width/2)/zoom.currentScale,
+                centerY + (e.pageY - height/2)/zoom.currentScale, 
+                linewidth, 
+                color, 
+                figureState.figureStartX, 
+                figureState.figureStartY,
+            ]))
+        }
+    }
+
+
 
     function mouseMove(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(!isMouseDown) return
@@ -172,7 +201,7 @@ const Canvas: FC = () => {
             setIsAltKeyWasDown(false)
             setIsAltKeyDownBeforeMouse(false)
             setIsMouseDown(false)
-            canvasCtx.beginPath()
+            canvasCtx?.beginPath()
             return
         }
 
@@ -181,8 +210,13 @@ const Canvas: FC = () => {
     }
 
     function draw(x: number, y: number): void {
-        figure(x, y)
+        if(!isMouseDown) {
+            figureState.figureDraw(x, y, linewidth, color, x + linewidth, y + linewidth)
+        } else {
+            figureState.figureDraw(x, y, linewidth, color, figureState.figureStartX, figureState.figureStartY)
+        }
     }
+
 
 
     return ( 
@@ -211,7 +245,7 @@ const Canvas: FC = () => {
                                 onMouseDown={(e) => mouseDown(e)}
                                 onMouseMove={(e) => mouseMove(e)}
                                 onMouseUp={(e) => mouseUp(e)}
-                                onMouseLeave={(e) => mouseUp(e)}
+                                onMouseLeave={(e) => mouseLeave(e)}
                             />
                             <div ref={topRef} className='observed-top'/>
                             <div ref={rightRef} className='observed-right'/>

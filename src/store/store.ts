@@ -1,4 +1,4 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { configureStore, combineReducers, getDefaultMiddleware } from '@reduxjs/toolkit';
 import brushReducer from './reducers/brushReducer';
 import colorReducer from './reducers/colorReducer';
 import zoomReducer from './reducers/zoomReducer';
@@ -16,6 +16,9 @@ const rootReducer = combineReducers({
 
 export const store = configureStore({
     reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false,
+    }),
 }) 
 
 export type RootState = ReturnType<typeof rootReducer>
