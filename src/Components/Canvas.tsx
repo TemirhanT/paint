@@ -1,12 +1,11 @@
-import React, {FC, useLayoutEffect} from 'react';
+import React, {FC} from 'react';
 import { useRef, useEffect, useState} from "react";
 import { useSelector } from 'react-redux/es/exports';
 import { AppDispatch, RootState } from '../store/store';
 import { useDispatch } from 'react-redux';
-import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef, useTransformEffect, useTransformContext } from "react-zoom-pan-pinch";
-import { IZoomState } from '../store/reducers/zoomReducer';
+import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
 import Zoom from './Toolbar/Zoom'
-import { InView, useInView } from 'react-intersection-observer';
+import { useInView } from 'react-intersection-observer';
 import { setCanvasCtx } from '../store/reducers/canvasReducer';
 import { pushCash, setFigureStartX, setFigureStartY } from '../store/reducers/figureReducer';
 
@@ -52,7 +51,7 @@ const Canvas: FC = () => {
     const color = useSelector((state: RootState) => state.colorReducer.color);
     const zoom = useSelector((state: RootState) => state.zoomReducer);
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<AppDispatch>()
 
     
 

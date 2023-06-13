@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { useDispatch } from "react-redux";
 import { pushCash, setFigureDraw, setFigureType } from "../../store/reducers/figureReducer";
 
@@ -9,12 +9,10 @@ function Figures<FC>() {
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx);
     const figureState = useSelector((state: RootState) => state.figureReducer);
     const cash = useSelector((state: RootState) => state.figureReducer.cash);
-    const linewidth = useSelector((state: RootState) => state.brushReducer.linewidth);
-    const color = useSelector((state: RootState) => state.colorReducer.color);
     const zoom = useSelector((state: RootState) => state.zoomReducer);
 
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
 
 
