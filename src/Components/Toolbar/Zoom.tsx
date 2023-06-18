@@ -2,6 +2,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
 import { myZoomIn, myZoomOut } from "../../store/reducers/zoomReducer";
 
+
+// изменения зума и переменных, связанных с зумом
+
+
 function Zoom({ zoomIn, zoomOut, centerView }: any) {
 
     const zoom = useSelector((state: RootState) => state.zoomReducer);

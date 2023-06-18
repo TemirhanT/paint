@@ -13,6 +13,16 @@ import { pushCash, setFigureStartX, setFigureStartY } from '../store/reducers/fi
 
 const Canvas: FC = () => {
 
+
+    // ЧАСТЬ С ПЕРЕМЕННЫМИ
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [height, setHeight] = useState<number>(window.innerHeight-270);
     const [startX, setStartX] = useState<number>(0);
@@ -25,8 +35,11 @@ const Canvas: FC = () => {
     const [difY, setDifY] = useState<number>(0);
     const [centerX, setCenterX] = useState<number>(width/2);
     const [centerY, setCenterY] = useState<number>(height/2);
-    const [button, setButton] = useState<string>("Alt");
 
+
+
+    // переменные для отслеживания краев экрана
+    // в случае, если края экрана видны пользователю, значения centerX и centerY будут определенными
     const options = {
         threshold: 0
     }
@@ -56,6 +69,15 @@ const Canvas: FC = () => {
     
 
 
+    // ЧАСТЬ С USEEFFECT'АМИ
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
     useEffect(() => {
         dispatch(setCanvasCtx(canvasRef.current?.getContext('2d')));
     }, [canvasRef])
@@ -71,22 +93,57 @@ const Canvas: FC = () => {
 
 
     useEffect(() => {
-        window.addEventListener('keydown', (e) => {if(e.altKey) setIsAltKeyDown(true)}); 
-        return window.removeEventListener('keydown', (e) => {if(e.altKey) setIsAltKeyDown(true)})
+        const func = () => {
+            setWidth(window.innerWidth)
+            setCenterX(window.innerWidth/2)
+        }
+        window.addEventListener('resize', func); 
+        return () => {
+            window.removeEventListener('resize', func)
+        }
     }, [])
 
 
     useEffect(() => {
-        const altKeyUp = () => {
-            setButton("Alt")
-            setIsAltKeyDown(false)
+        const func = () => {
+            setHeight(window.innerHeight)
+            setCenterY(window.innerHeight/2)
         }
-
-        window.addEventListener('keyup', () => altKeyUp())
-        return window.removeEventListener('keyup', () => altKeyUp())
+        window.addEventListener('resize', func); 
+        return () => {
+            window.removeEventListener('resize', func)
+        }
     }, [])
 
 
+    useEffect(() => {
+        const func = (e: KeyboardEvent) => {
+            if(e.altKey) setIsAltKeyDown(true)
+        }
+        window.addEventListener('keydown', func); 
+        return () => {
+            window.removeEventListener('keydown', func)
+        }
+    }, [])
+
+
+    useEffect(() => {
+        const func = () => {
+            setIsAltKeyDown(false)
+        }
+
+        window.addEventListener('keyup', func);
+        return () => {
+            window.removeEventListener('keyup', func)
+        }
+    }, [])
+
+
+    
+    // useEffect'ы для определения касается ли поле зрения пользователя края канваса
+    // значение передвинутых центров перестают учитывать difX и difY и расчитываются по другим формулам
+    // useEffect'ы с дилэем и currentScale'ом в дэпсах нужны для случаев, когда пользователь уменьшает зум и задевает край экрана,во время расширения
+    // а delay позволяет дать время обновится значению скейла и правильно расчитать значение центра
     useEffect(() => {
         setCenterX((prev: number): number => {
             if(leftEntry?.isIntersecting) return width/(2*zoom.currentScale)
@@ -136,9 +193,36 @@ const Canvas: FC = () => {
 
 
 
+
+    // ЧАСТЬ С СОБЫТИЯМИ МЫШИ И РИСОВКОЙ
+    // 
+    // Рисование работает основываясь на значении центра, которое может изменяться.
+    // Значение центра может меняться, если пользователь захочет передвинуть холст.
+    // Эффект передвижения работает благодаря библиотеке react-zoom-pan-pinch.
+    // Однако при зуме и передвижении по холсту, координаты нарисованной линии будут не совпадать с тем, куда нажимал пользователь.
+    // Для этого значения координат пересчитываются с учетом отдаления мышки от centerX и centerY, а также учитывается zoom.currentScale.
+    // 
+    // 
+    // Пример.  Вы увеличили зум в два раза и поставили точку в самую правую часть экрана. Зум происходит именно в центр экрана
+    // Пусть ширина будет 1000, centerX изначально 500.
+    // Так как зум = 2, то пользователь видит территорию от 250 до 750 координат, и ставя точку в самый край, ожидается, что точка будет на 750, но она отрисовывается на 1000, за пределами поля зрения пользователя.
+    // Для вычисления нужных координат я нахожу разницу от непередвинутого центра экрана(width/2), делю ее на нынешнее значение зума и прибавляю к передвинотому центру экрана(centerX), то есть 500 + (1000 - 500)/2.
+    // Я описал принцип работы этой формулы centerX + (e.pageX - width/2)/zoom.currentScale
+    // 
+    // 
+    // Как уже говорил, centerX может меняться.
+    // При зажатой alt, вместо рисования происходит движение по холсту и сэтится значение difX, которая отвечает за обновление centerX.
+    // setDifX происходит при отпускании мыши(функция mouseUp ниже) и при выходе мыши за края экрана(функция mouseLeave ниже), а обновление centerX происходит в разделе с UseEffect'ами выше.
+    // 
+    // 
+    // 
+    // В функциях присутствует много проверок, чтобы предотвратить разные баги. Также есть pushCash, который нужен для перерисовки во время рисования фигур
+    // 
+    // 
     function mouseDown(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(e.button == 2 || e.button == 1) return
         setIsMouseDown(true);
+        console.log(width, height)
         if(isAltKeyDown) {
             setIsAltKeyDownBeforeMouse(true)
             setStartX(e.pageX);
@@ -146,8 +230,8 @@ const Canvas: FC = () => {
             return;
         }
         canvasCtx?.beginPath()
-        dispatch(setFigureStartX(e.pageX));
-        dispatch(setFigureStartY(e.pageY));
+        dispatch(setFigureStartX(centerX + (e.pageX - width/2)/zoom.currentScale));
+        dispatch(setFigureStartY(centerY + (e.pageY - height/2)/zoom.currentScale));
         draw(centerX + (e.pageX - width/2)/zoom.currentScale,
              centerY + (e.pageY - height/2)/zoom.currentScale);
     }
@@ -169,18 +253,21 @@ const Canvas: FC = () => {
     function mouseUp(e: React.MouseEvent<HTMLCanvasElement>): void {
         mouseLeave(e)
 
-        if(figureState.figureType == 'line') {
-            dispatch(pushCash(null))
-        }  else {
-            dispatch(pushCash([
-                figureState.figureType, 
-                centerX + (e.pageX - width/2)/zoom.currentScale,
-                centerY + (e.pageY - height/2)/zoom.currentScale, 
-                linewidth, 
-                color, 
-                figureState.figureStartX, 
-                figureState.figureStartY,
-            ]))
+        if(!isAltKeyWasDown && !isAltKeyDownBeforeMouse) {
+            if(figureState.figureType == 'line') {
+                dispatch(pushCash(null))
+            }  else {
+                dispatch(pushCash([
+                    figureState.figureType, 
+                    centerX + (e.pageX - width/2)/zoom.currentScale,
+                    centerY + (e.pageY - height/2)/zoom.currentScale, 
+                    linewidth, 
+                    color, 
+                    zoom.currentScale,
+                    figureState.figureStartX, 
+                    figureState.figureStartY,
+                ]))
+            }
         }
     }
 
@@ -210,9 +297,9 @@ const Canvas: FC = () => {
 
     function draw(x: number, y: number): void {
         if(!isMouseDown) {
-            figureState.figureDraw(x, y, linewidth, color, x + linewidth, y + linewidth)
+            figureState.figureDraw(x, y, linewidth, color, zoom.currentScale, x - linewidth, y + linewidth)
         } else {
-            figureState.figureDraw(x, y, linewidth, color, figureState.figureStartX, figureState.figureStartY)
+            figureState.figureDraw(x, y, linewidth, color, zoom.currentScale, figureState.figureStartX - linewidth, figureState.figureStartY + linewidth)
         }
     }
 
@@ -225,7 +312,7 @@ const Canvas: FC = () => {
             initialScale={zoom.currentScale}
             minScale={zoom.minScale}
             maxScale={zoom.maxScale}
-            panning={{activationKeys: [button], velocityDisabled: true}}
+            panning={{activationKeys: ["Alt"], velocityDisabled: true}}
             disablePadding={true}
             wheel={{disabled: true}}
             doubleClick={{disabled: true}}

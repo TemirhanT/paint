@@ -5,6 +5,10 @@ import { changeBrush } from "../../store/reducers/brushReducer";
 import { AppDispatch, RootState } from "../../store/store";
 
 
+
+// выбор толщины кисти
+
+
 const Linewidth: FC = () => {
 
     const dispatch = useDispatch<AppDispatch>()

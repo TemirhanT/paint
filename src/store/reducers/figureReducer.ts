@@ -10,17 +10,19 @@ interface IFigureState {
 
 const figureState: IFigureState = {
     figureType: 'line',
-    figureDraw: () => {},
-    figureStartX: 0,
+    figureDraw: () => {}, // сюда сетится функция рисования в компоненте figures.tsx и передается в компонент canvas.tsx в функцию draw()
+    figureStartX: 0, //начальные координаты фигуры
     figureStartY: 0,
-    cash: [],
+    cash: [], //массив, который сохраняет все нужные значения о прошлых координатах, для будущей перерисовки, во время рисования фигур
 }
 
 export const setFigureType = createAction<string>("SET_FIGURE_TYPE")
 export const setFigureDraw = createAction<Function>("SET_FIGURE_DRAW");
 export const setFigureStartX = createAction<number>("SET_FIGURE_START_X");
 export const setFigureStartY = createAction<number>("SET_FIGURE_START_Y");
-export const pushCash = createAction<[string, number, number, number, string, number?, number?] | null>("PUSH_CASH");
+export const pushCash = createAction<[string, number, number, number, string, number, number?, number?] | null>("PUSH_CASH");   
+// для перерисовки нужно запоминать прошлые значение тип фигуры, color, linewidth, zoom.currentScale, ну и координаты, поэтому очень много пропсов
+// порядок пропсов выглядит так (тип рисунка, x, y, linewidth, color, zoom.currentScale, figureStartX, figureStartY)
 
 
 export default createReducer(figureState, {

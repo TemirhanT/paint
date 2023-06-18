@@ -4,6 +4,10 @@ import { AppDispatch, RootState } from "../../store/store";
 import { SketchPicker } from 'react-color';
 import { changeColor } from "../../store/reducers/colorReducer";
 
+
+// изменение цвета
+
+
 const Color: FC = () => {
 
     const color = useSelector((state: RootState) => state.colorReducer.color)
