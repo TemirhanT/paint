@@ -4,6 +4,7 @@ import colorReducer from './reducers/colorReducer';
 import zoomReducer from './reducers/zoomReducer';
 import canvasReducer from './reducers/canvasReducer';
 import figureReducer from './reducers/figureReducer';
+import memoryReducer from './reducers/memoryReducer';
 
 
 const rootReducer = combineReducers({
@@ -11,7 +12,8 @@ const rootReducer = combineReducers({
     brushReducer, 
     colorReducer,
     zoomReducer,
-    figureReducer
+    figureReducer,
+    memoryReducer,
 })
 
 export const store = configureStore({

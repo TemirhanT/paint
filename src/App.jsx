@@ -6,6 +6,7 @@ import { brush_4, brush_6, brush_8, brush_10 } from './store/reducers/brushReduc
 import Linewidth from './Components/Toolbar/Linewidth';
 import Color from './Components/Toolbar/Color';
 import Figures from './Components/Toolbar/Figures';
+import CancelRetrieve from './Components/Toolbar/CancelRetrieve';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
   return (
     <div className="App">
       <div className='toolbar'>
+        <CancelRetrieve/>
         <Linewidth/>
         <Color/>
         <Figures/> 

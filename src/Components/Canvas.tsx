@@ -7,7 +7,8 @@ import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from "reac
 import Zoom from './Toolbar/Zoom'
 import { useInView } from 'react-intersection-observer';
 import { setCanvasCtx } from '../store/reducers/canvasReducer';
-import { pushCash, setFigureStartX, setFigureStartY } from '../store/reducers/figureReducer';
+import { setFigureStartX, setFigureStartY } from '../store/reducers/figureReducer';
+import { pushCash } from '../store/reducers/memoryReducer';
 
 
 
@@ -16,7 +17,9 @@ const Canvas: FC = () => {
 
     // ЧАСТЬ С ПЕРЕМЕННЫМИ
     // 
-    // 
+    // почти все значения, связанные с Y координатой имеют -270. 
+    // Это место, занимаемое тулбаром и небольшим пробелом между тулбаром и канвасом
+    // toolbar: 250px,   space: 20px
     // 
     // 
     // 
@@ -97,6 +100,7 @@ const Canvas: FC = () => {
             setWidth(window.innerWidth)
             setCenterX(window.innerWidth/2)
         }
+
         window.addEventListener('resize', func); 
         return () => {
             window.removeEventListener('resize', func)
@@ -106,9 +110,10 @@ const Canvas: FC = () => {
 
     useEffect(() => {
         const func = () => {
-            setHeight(window.innerHeight)
-            setCenterY(window.innerHeight/2)
+            setHeight(window.innerHeight - 270)
+            setCenterY((window.innerHeight - 270)/2)
         }
+
         window.addEventListener('resize', func); 
         return () => {
             window.removeEventListener('resize', func)
@@ -120,6 +125,7 @@ const Canvas: FC = () => {
         const func = (e: KeyboardEvent) => {
             if(e.altKey) setIsAltKeyDown(true)
         }
+        
         window.addEventListener('keydown', func); 
         return () => {
             window.removeEventListener('keydown', func)
