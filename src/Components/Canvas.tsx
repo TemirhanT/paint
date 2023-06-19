@@ -8,7 +8,8 @@ import Zoom from './Toolbar/Zoom'
 import { useInView } from 'react-intersection-observer';
 import { setCanvasCtx } from '../store/reducers/canvasReducer';
 import { setFigureStartX, setFigureStartY } from '../store/reducers/figureReducer';
-import { pushCash } from '../store/reducers/memoryReducer';
+import { pushLightCash } from '../store/reducers/memoryReducer';
+import { myReset } from '../store/reducers/zoomReducer';
 
 
 
@@ -66,6 +67,7 @@ const Canvas: FC = () => {
     const linewidth = useSelector((state: RootState) => state.brushReducer.linewidth);
     const color = useSelector((state: RootState) => state.colorReducer.color);
     const zoom = useSelector((state: RootState) => state.zoomReducer);
+    const lightCash = useSelector((state: RootState) => state.memoryReducer.lightCash)
 
     const dispatch = useDispatch<AppDispatch>()
 
@@ -99,19 +101,11 @@ const Canvas: FC = () => {
         const func = () => {
             setWidth(window.innerWidth)
             setCenterX(window.innerWidth/2)
-        }
-
-        window.addEventListener('resize', func); 
-        return () => {
-            window.removeEventListener('resize', func)
-        }
-    }, [])
-
-
-    useEffect(() => {
-        const func = () => {
             setHeight(window.innerHeight - 270)
             setCenterY((window.innerHeight - 270)/2)
+
+            transformRef.current?.resetTransform(60);
+            dispatch(myReset())
         }
 
         window.addEventListener('resize', func); 
@@ -119,6 +113,7 @@ const Canvas: FC = () => {
             window.removeEventListener('resize', func)
         }
     }, [])
+
 
 
     useEffect(() => {
@@ -224,11 +219,11 @@ const Canvas: FC = () => {
     // 
     // В функциях присутствует много проверок, чтобы предотвратить разные баги. Также есть pushCash, который нужен для перерисовки во время рисования фигур
     // 
-    // 
+    //  
     function mouseDown(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(e.button == 2 || e.button == 1) return
         setIsMouseDown(true);
-        console.log(width, height)
+        console.log(lightCash)
         if(isAltKeyDown) {
             setIsAltKeyDownBeforeMouse(true)
             setStartX(e.pageX);
@@ -261,9 +256,9 @@ const Canvas: FC = () => {
 
         if(!isAltKeyWasDown && !isAltKeyDownBeforeMouse) {
             if(figureState.figureType == 'line') {
-                dispatch(pushCash(null))
+                dispatch(pushLightCash(null))
             }  else {
-                dispatch(pushCash([
+                dispatch(pushLightCash([
                     figureState.figureType, 
                     centerX + (e.pageX - width/2)/zoom.currentScale,
                     centerY + (e.pageY - height/2)/zoom.currentScale, 
@@ -273,6 +268,7 @@ const Canvas: FC = () => {
                     figureState.figureStartX, 
                     figureState.figureStartY,
                 ]))
+                dispatch(pushLightCash(null))
             }
         }
     }
@@ -301,6 +297,15 @@ const Canvas: FC = () => {
              centerY + (e.pageY - height/2)/zoom.currentScale);
     }
 
+
+    // порядок пропсов: 
+    // 1.координата мыши по горизонтали 
+    // 2.по вертикали 
+    // 3.толщина линии фигуры 
+    // 4.цвет  
+    // 5.скейл 
+    // 6.начальная точка фигуры по горизонтали (сэтится при mouseDown)
+    // 7.по вертикали(сэтится при mouseDown)
     function draw(x: number, y: number): void {
         if(!isMouseDown) {
             figureState.figureDraw(x, y, linewidth, color, zoom.currentScale, x - linewidth, y + linewidth)

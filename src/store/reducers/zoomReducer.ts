@@ -17,6 +17,7 @@ const zoomState: IZoomState = {
 
 export const myZoomIn = createAction("ZOOM_IN");
 export const myZoomOut = createAction("ZOOM_OUT");
+export const myReset = createAction("RESET")
 
 export default createReducer(zoomState, {
     "ZOOM_IN": function (state: IZoomState) {
@@ -24,5 +25,8 @@ export default createReducer(zoomState, {
     },
     "ZOOM_OUT": function (state: IZoomState) {
         if(state.currentScale > state.minScale)  state.currentScale -= state.step;
+    },
+    "RESET": function (state: IZoomState) {
+        state.currentScale = 1
     }
 })

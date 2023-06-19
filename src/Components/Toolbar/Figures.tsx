@@ -7,7 +7,7 @@ import { drawCircle } from "../../DrawFunctions/Circle";
 import { drawLine } from "../../DrawFunctions/Line";
 import { drawRectangle } from "../../DrawFunctions/Rectangle";
 import { drawTriangle } from "../../DrawFunctions/Triangle";
-import { pushCash } from "../../store/reducers/memoryReducer";
+import { pushLightCash } from "../../store/reducers/memoryReducer";
 import { redraw } from "../../DrawFunctions/Redraw";
 
 
@@ -30,7 +30,7 @@ function Figures<FC>() {
     const figureState = useSelector((state: RootState) => state.figureReducer);
     const linewidth = useSelector((state: RootState) => state.brushReducer.linewidth);
     const color = useSelector((state: RootState) => state.colorReducer.color);
-    const cash = useSelector((state: RootState) => state.memoryReducer.cash);
+    const lightCash = useSelector((state: RootState) => state.memoryReducer.lightCash);
     const zoom = useSelector((state: RootState) => state.zoomReducer);
 
 
@@ -43,23 +43,23 @@ function Figures<FC>() {
 
     // комбинация отрисовки и перерисовки
     const lineFigure = (x: number, y: number, linewidth: number, color: string, scale: number) => {
-        dispatch(pushCash(['line', x, y, linewidth, color, zoom.currentScale]))
-        drawLine(x, y, linewidth, color, zoom.currentScale, canvasCtx)
+        dispatch(pushLightCash(['line', x, y, linewidth, color, scale]))
+        drawLine(x, y, linewidth, color, scale, canvasCtx)
     }
 
     const rectangleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number) => {
-        redraw(canvasCtx, cash)
-        drawRectangle(x, y, linewidth, color, zoom.currentScale, startX, startY, canvasCtx)
+        redraw(canvasCtx, lightCash)
+        drawRectangle(x, y, linewidth, color, scale, startX, startY, canvasCtx)
     }
 
     const triangleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number) => {
-        redraw(canvasCtx, cash)
-        drawTriangle(x, y, linewidth, color, zoom.currentScale, startX, startY, canvasCtx)
+        redraw(canvasCtx, lightCash)
+        drawTriangle(x, y, linewidth, color, scale, startX, startY, canvasCtx)
     }
 
     const circleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number) => {
-        redraw(canvasCtx, cash)
-        drawCircle(x, y, linewidth, color, zoom.currentScale, startX, startY, canvasCtx)
+        redraw(canvasCtx, lightCash)
+        drawCircle(x, y, linewidth, color, scale, startX, startY, canvasCtx)
     }
 
 
@@ -90,18 +90,18 @@ function Figures<FC>() {
         if(figureState.figureType == 'circle') {
             dispatch(setFigureDraw(circleFigure))
         }
-    }, [zoom.currentScale, cash])
+    }, [lightCash])
 
     useEffect(() => {
         const func = () => {
-            redraw(canvasCtx, cash)
+            redraw(canvasCtx, lightCash)
         } 
 
         window.addEventListener('resize', func)
         return () => {
             window.removeEventListener('resize', func)
         }
-    }, [zoom.currentScale, cash])
+    }, [lightCash])
 
 
 
