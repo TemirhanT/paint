@@ -5,8 +5,6 @@ import { pushCash, setCash, stepDecr, stepIncr } from "../../store/reducers/memo
 import { redraw } from "../../DrawFunctions/Redraw";
 
 const CancelRetrieve: FC = () => {
-
-    const [counter, setCounter] = useState<number>(0)
     
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx)
     const addControl = useSelector((state: RootState) => state.memoryReducer.addControl);

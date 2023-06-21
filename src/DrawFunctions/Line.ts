@@ -2,11 +2,11 @@ export const drawLine = (x: number, y: number, linewidth: number, color: string,
     ctx.lineWidth = linewidth;
     ctx.fillStyle = color;
     ctx.strokeStyle = color;
-    ctx.lineTo(x, y - 270/scale);
+    ctx.lineTo(x - 10/scale, y - 266/scale);
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(x, y - 270/scale, linewidth/2 , 0, Math.PI * 2);
+    ctx.arc(x - 10/scale, y - 266/scale, linewidth/2 , 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.moveTo(x, y - 270/scale);
+    ctx.moveTo(x - 10/scale, y - 266/scale);
 }

@@ -9,6 +9,7 @@ import { drawRectangle } from "../../DrawFunctions/Rectangle";
 import { drawTriangle } from "../../DrawFunctions/Triangle";
 import { pushCash } from "../../store/reducers/memoryReducer";
 import { redraw } from "../../DrawFunctions/Redraw";
+import { hover } from "@testing-library/user-event/dist/hover";
 
 
 // выбор фигуры для рисования
@@ -26,6 +27,8 @@ function Figures<FC>() {
     // 
     // 
     // 
+    const [isDroppedDown, setIsDroppedDown] = useState<boolean>(false)
+    const [imgSrc, setImgSrc] = useState<string>("/Assets/figuresStroke.png")
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx);
     const figureState = useSelector((state: RootState) => state.figureReducer);
     const cash = useSelector((state: RootState) => state.memoryReducer.cash);
@@ -132,26 +135,48 @@ function Figures<FC>() {
         dispatch(setFigureType('circle'));
     }
 
+    const chooseOption = (bool: boolean) => {
+        setIsDroppedDown(false);
+        dispatch(setIsFill(bool))
+    }
+
 
 
     return ( 
-        <div>
-            <button onClick={() => chooseLine()}>
-                <img src="/Assets/curved-line.png" width={24} height={24}/>
-            </button>
-            <button onClick={() => chooseTriangle()}>
-                <img src="/Assets/triangle.png" width={24} height={24}/>
-            </button>
-            <button onClick={() => chooseRectangle()}>
-                <img src="/Assets/square.png" width={24} height={24}/>
-            </button>
-            <button onClick={() => chooseCircle()}>
-                <img src="/Assets/circle.png" width={24} height={24}/>
-            </button>
-            <select onChange={(e) => dispatch(setIsFill((/true/.test(e.currentTarget.value))))}>
-                <option value= 'false' style={{backgroundImage: '/Assets/circleFill.png', width: 24, height: 24}}/>
-                <option value= "true" style={{backgroundImage: '/Assets/circleFill.png', width: 24, height: 24}}/>
-            </select>
+        <div className="figuresWrapper">
+            <div className="figures">
+                <button className="figure" onClick={() => chooseLine()}>
+                    <img src="/Assets/curved-line.png"/>
+                </button>
+                <button className="figure" onClick={() => chooseTriangle()}>
+                    <img src="/Assets/triangle.png"/>
+                </button>
+                <button className="figure" onClick={() => chooseRectangle()}>
+                    <img src="/Assets/square.png"/>
+                </button>
+                <button className="figure" onClick={() => chooseCircle()}>
+                    <img src="/Assets/circle.png"/>
+                </button>
+            </div>
+
+
+            <div className="fillSelector">
+                <div className="title" onClick={() => setIsDroppedDown(true)}>
+                    <img src={imgSrc} width={24} height={24}/>
+                    <img src="/Assets/arrowDown.png" alt="arrow down" width={16} height={16}/>
+                </div>
+
+                <div className="options" style={isDroppedDown ? {display: "flex"} : {display: 'none'}}>
+                    <div className="option" onClick={() => chooseOption(false)}>
+                        <img src="/Assets/figuresStroke.png" width={24} height={24}/>
+                        <div>Обводить</div>
+                    </div>
+                    <div className="option" onClick={() => chooseOption(true)}>
+                        <img src="/Assets/figuresFill.png" width={24} height={24}/>
+                        <div>Заполнять</div>
+                    </div>
+                </div>
+            </div>
         </div>
      );
 }

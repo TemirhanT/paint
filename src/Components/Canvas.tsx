@@ -27,8 +27,8 @@ const Canvas: FC = () => {
     // 
     // 
     // 
-    const [width, setWidth] = useState<number>(window.innerWidth);
-    const [height, setHeight] = useState<number>(window.innerHeight-270);
+    const [width, setWidth] = useState<number>(window.innerWidth - 20);
+    const [height, setHeight] = useState<number>(window.innerHeight-274);
     const [startX, setStartX] = useState<number>(0);
     const [startY, setStartY] = useState<number>(0);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
@@ -99,10 +99,10 @@ const Canvas: FC = () => {
 
     useEffect(() => {
         const func = () => {
-            setWidth(window.innerWidth)
-            setCenterX(window.innerWidth/2)
-            setHeight(window.innerHeight - 270)
-            setCenterY((window.innerHeight - 270)/2)
+            setWidth(window.innerWidth - 20)
+            setCenterX((window.innerWidth - 20)/2)
+            setHeight(window.innerHeight - 274)
+            setCenterY((window.innerHeight - 274)/2)
 
             transformRef.current?.resetTransform(60);
             dispatch(myReset())

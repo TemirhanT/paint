@@ -5,10 +5,10 @@
           box-sizing: border-box;
 }
 
-.App .toolbar .selector-wrapper::before, .App .toolbar .color-picker::before {
+.App .toolbar .figuresWrapper::before, .App .toolbar .selector-wrapper::before, .App .toolbar .color-picker::before {
   content: "";
   height: 200px;
-  border-right: 2px rgb(243, 243, 243) solid;
+  border-right: 2px rgb(32, 42, 72) solid;
   margin: 0 20px;
 }
 
@@ -22,7 +22,7 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  background-color: #ffffff;
+  background-color: #a274df;
 }
 .App .toolbar {
   display: -webkit-box;
@@ -62,19 +62,141 @@
           align-items: center;
   width: 50px;
   height: 100px;
-  background-color: #ffffff;
+  background-color: #d1a3ef;
+}
+.App .toolbar .figuresWrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: relative;
+}
+.App .toolbar .figuresWrapper .figures {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  width: 70px;
+}
+.App .toolbar .figuresWrapper .figures .figure {
+  width: 35px;
+  height: 35px;
+  border: none;
+  background-color: #a274df;
+  text-decoration: none;
+}
+.App .toolbar .figuresWrapper .figures .figure img {
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  border: 2px #a274df solid;
+}
+.App .toolbar .figuresWrapper .figures .figure img:hover {
+  border: 2px black solid;
+  border-radius: 5px;
+  background-color: #d1a3ef;
+}
+.App .toolbar .figuresWrapper .fillSelector {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  position: absolute;
+  left: 130px;
+}
+.App .toolbar .figuresWrapper .fillSelector .title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 40px;
+  border: 2px #a274df solid;
+  margin-left: 3px;
+}
+.App .toolbar .figuresWrapper .fillSelector .title img {
+  margin: 0 3px;
+}
+.App .toolbar .figuresWrapper .fillSelector .title:hover {
+  background-color: #d1a3ef;
+  border: 2px rgb(32, 42, 72) solid;
+  border-radius: 5px;
+}
+.App .toolbar .figuresWrapper .fillSelector .options {
+  border: 2px rgb(32, 42, 72) solid;
+  border-radius: 10px;
+  background-color: #af6cc9;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  position: absolute;
+  left: -22px;
+  top: 55px;
+}
+.App .toolbar .figuresWrapper .fillSelector .options .option {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 5px;
+  z-index: 10;
+}
+.App .toolbar .figuresWrapper .fillSelector .options .option img {
+  margin-right: 3px;
+}
+.App .toolbar .figuresWrapper .fillSelector .options .option:first-child:hover {
+  background-color: #d1a3ef;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.App .toolbar .figuresWrapper .fillSelector .options .option:last-child:hover {
+  background-color: #d1a3ef;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 .App .space {
   width: 100%;
-  height: 20px;
-  background-color: rgb(243, 243, 243);
+  height: 4px;
+  background-color: rgb(32, 42, 72);
 }
 .App .zoom {
   position: absolute;
   top: 100px;
-  left: 650px;
+  left: 850px;
+}
+.App .canvas-wrapper {
+  width: 100%;
+  height: calc(100vh - 254px);
+  background-color: #a274df;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 .App .canvas-wrapper .canvas {
+  border: 4px rgb(32, 42, 72) solid;
+  border-radius: 20px;
   background-color: #fff;
 }
 .App .canvas-wrapper .observed-top {

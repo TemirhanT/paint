@@ -7,7 +7,7 @@ export const drawCircle = (x: number, y: number, linewidth: number, color: strin
     const radius = difRadX > difRadY ? difRadY : difRadX
     ctx.fillStyle = color;
     ctx.beginPath();
-    ctx.arc(startX + (x - startX)/2, startY + (y - startY)/2 - 270/scale, radius, 0, Math.PI * 2);
+    ctx.arc(startX + (x - startX)/2 - 8/scale, startY + (y - startY)/2 - 270/scale, radius, 0, Math.PI * 2);
     isFill ? ctx.fill() : ctx.stroke();
     ctx.beginPath();
 }
