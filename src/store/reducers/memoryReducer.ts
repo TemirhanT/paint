@@ -1,55 +1,45 @@
 import { PayloadAction, createAction, createReducer } from "@reduxjs/toolkit"
 
 interface IMemoryState {
-    hardCash: number[][] & string[][],
-    lightCash: number[][] & string[][],
-    addControl: boolean, //переменная следит за случаями когда в lightCash добавляются данные.
-    deleteControl: boolean, //переменная следит за случаями когда из lightCash удаляются данные.
+    cash: any,
+    addControl: number, //переменная следит за случаями когда в lightCash добавляются данные.
+    step: number,
 }
 
 const memoryState: IMemoryState = {
-    hardCash: [],
-    lightCash: [], //массив, который сохраняет все нужные значения о прошлых координатах, для будущей перерисовки, во время рисования фигур
-    addControl: false,
-    deleteControl: false,
+    cash: [], //массив, который сохраняет все нужные значения о прошлых координатах, для будущей перерисовки, во время рисования фигур
+    addControl: 0,
+    step: 0,
 }
 
 
 // для перерисовки нужно запоминать прошлые значение тип фигуры, color, linewidth, zoom.currentScale, ну и координаты, поэтому очень много пропсов
 // порядок пропсов выглядит так (тип рисунка, x, y, linewidth, color, zoom.currentScale, figureStartX, figureStartY)
-export const pushLightCash = createAction<[string, number, number, number, string, number, number?, number?] | null>("PUSH_LIGHT_CASH"); 
-export const popLightCash = createAction<number[][] & string[][]>("POP_LIGHT_CASH");
-export const clearLightCash = createAction<void>("CLEAR_LIGHT_CASH");
-export const setLightCash = createAction<number>("SET_LIGHT_CASH")
-export const setHardCash = createAction<void>("SET_HARD_CASH");
+export const pushCash = createAction<[string, number, number, number, string, number, number?, number?] | null>("PUSH_CASH"); 
+export const setCash = createAction<any>("SET_CASH");
+export const stepIncr = createAction<void>("STEP_INCR");
+export const stepDecr = createAction<void>("STEP_DECR");
+export const clearCash = createAction<void>("CLEAR_CASH");
 
 
 export default createReducer(memoryState, {
-    "PUSH_LIGHT_CASH": function(state: IMemoryState, action: PayloadAction<number[] & string[]>) {
-        state.lightCash.push(action.payload);
-        state.addControl = true;
-        state.deleteControl = false;
+    "PUSH_CASH": function(state: IMemoryState, action: PayloadAction<number[] & string[]>) {
+        state.cash = state.cash.slice(0, state.cash.length + state.step)
+        state.cash.push(action.payload);
+        state.step = 0
     },
-    "POP_LIGHT_CASH": function(state: IMemoryState, action: PayloadAction<number[] & string[]>) {
-        for(let i = action.payload.length - 2; i > -2; i--) {
-            if(action.payload[+i] === null) {
-                state.lightCash.pop()
-                break
-            }
-            state.lightCash.pop()
-        }
-        state.addControl = false;
-        state.deleteControl = true;
+    "SET_CASH": function(state: IMemoryState, action: PayloadAction<any>) {
+        console.log(action.payload, state.cash)
+        state.cash = action.payload;
+        state.step = 0
     },
-    "CLEAR_LIGHT_CASH": function(state: IMemoryState) {
-        state.lightCash = [];
-        state.deleteControl = true;
+    "STEP_INCR": function(state: IMemoryState) {
+        state.step = state.step + 1;
     },
-    "SET_LIGHT_CASH": function(state: IMemoryState, action: PayloadAction<number>) {
-        const temp: any = state.hardCash.slice(0, action.payload);
-        state.lightCash = temp;
+    "STEP_DECR": function(state: IMemoryState) {
+        state.step = state.step - 1;
     },
-    "SET_HARD_CASH": function(state: IMemoryState) {
-        state.hardCash = state.lightCash
+    "CLEAR_CASH": function(state: IMemoryState) {
+        state.cash = [];
     },
 })

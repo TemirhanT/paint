@@ -1,51 +1,51 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
-import { popLightCash, pushLightCash, setHardCash, setLightCash } from "../../store/reducers/memoryReducer";
+import { pushCash, setCash, stepDecr, stepIncr } from "../../store/reducers/memoryReducer";
 import { redraw } from "../../DrawFunctions/Redraw";
 
 const CancelRetrieve: FC = () => {
+
+    const [counter, setCounter] = useState<number>(0)
     
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx)
     const addControl = useSelector((state: RootState) => state.memoryReducer.addControl);
-    const deleteControl = useSelector((state: RootState) => state.memoryReducer.deleteControl);
-    const lightCash = useSelector((state: RootState) => state.memoryReducer.lightCash);
-    const hardCash = useSelector((state: RootState) => state.memoryReducer.hardCash);
+    const cash = useSelector((state: RootState) => state.memoryReducer.cash);
+    const step = useSelector((state: RootState) => state.memoryReducer.step);
 
     const dispatch = useDispatch<AppDispatch>()
 
 
-    useEffect(() => {
-        if(addControl) {
-            dispatch(setHardCash())
+
+
+    const retrieve = () => {   
+        for(let i = cash.length + step; i < cash.length; i++) {
+            dispatch(stepIncr()) 
+            if(cash[+i] === null) break
         }
-    }, [lightCash])
-
-
-    const retrieve = () => {    
-        const changedHardCash: any = hardCash.slice(0, lightCash.length + 2);
-
-        for(let i = changedHardCash.length - 2; i > 0; i--) {
-            if(lightCash[+i] === null) {
-                dispatch(setLightCash(+i))
-                break
-            }
-        }
-
-        redraw(canvasCtx, changedHardCash)
     }
 
     const cancel = () => {
-        let changedLightCash: any;
-        for(let i = lightCash.length - 2; i > 0; i--) {
-            if(lightCash[+i] === null) {
-                changedLightCash = lightCash.slice(0, +i)
-                break
-            }
+        for(let i = cash.length - 2 + step; i >= 0; i--) {
+            dispatch(stepDecr())
+            if(cash[+i] === null) break
         }
-        dispatch(popLightCash(lightCash))
-        redraw(canvasCtx, changedLightCash)
     }
+
+    const stepDraw = () => {
+        const changedCash: any = cash.slice(0, cash.length - 1 + step)
+        redraw(canvasCtx, changedCash)
+    }
+
+    // изначально был вариант с stepDraw() вкладывать сразу в retrieve и cancel
+    // но значение step использовалось прошлое 
+    // так что тут я сделал что то вроде async await
+    // то есть как только step диспачится то вызывается useEffect с обновленным значением
+    useEffect(() => {
+        if(cash && canvasCtx) {
+            stepDraw()
+        }
+    }, [step, canvasCtx])
 
     return ( 
         <div>

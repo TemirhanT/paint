@@ -8,7 +8,7 @@ import Zoom from './Toolbar/Zoom'
 import { useInView } from 'react-intersection-observer';
 import { setCanvasCtx } from '../store/reducers/canvasReducer';
 import { setFigureStartX, setFigureStartY } from '../store/reducers/figureReducer';
-import { pushLightCash } from '../store/reducers/memoryReducer';
+import { pushCash } from '../store/reducers/memoryReducer';
 import { myReset } from '../store/reducers/zoomReducer';
 
 
@@ -67,7 +67,7 @@ const Canvas: FC = () => {
     const linewidth = useSelector((state: RootState) => state.brushReducer.linewidth);
     const color = useSelector((state: RootState) => state.colorReducer.color);
     const zoom = useSelector((state: RootState) => state.zoomReducer);
-    const lightCash = useSelector((state: RootState) => state.memoryReducer.lightCash)
+    const cash = useSelector((state: RootState) => state.memoryReducer.cash)
 
     const dispatch = useDispatch<AppDispatch>()
 
@@ -223,7 +223,6 @@ const Canvas: FC = () => {
     function mouseDown(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(e.button == 2 || e.button == 1) return
         setIsMouseDown(true);
-        console.log(lightCash)
         if(isAltKeyDown) {
             setIsAltKeyDownBeforeMouse(true)
             setStartX(e.pageX);
@@ -238,27 +237,12 @@ const Canvas: FC = () => {
     }
 
 
-
-    function mouseLeave(e: React.MouseEvent<HTMLCanvasElement>): void {
-        if(isAltKeyWasDown && isAltKeyDownBeforeMouse) {
-            setDifX(startX - e.pageX)
-            setDifY(startY - e.pageY)
-            setIsAltKeyWasDown(false)
-            setIsAltKeyDownBeforeMouse(false)
-        }
-        setIsMouseDown(false);
-        canvasCtx.beginPath()
-    }
-
-
-    function mouseUp(e: React.MouseEvent<HTMLCanvasElement>): void {
-        mouseLeave(e)
-
+    function dispatchDuringMouseEvent(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(!isAltKeyWasDown && !isAltKeyDownBeforeMouse) {
             if(figureState.figureType == 'line') {
-                dispatch(pushLightCash(null))
+                dispatch(pushCash(null))
             }  else {
-                dispatch(pushLightCash([
+                dispatch(pushCash([
                     figureState.figureType, 
                     centerX + (e.pageX - width/2)/zoom.currentScale,
                     centerY + (e.pageY - height/2)/zoom.currentScale, 
@@ -268,9 +252,27 @@ const Canvas: FC = () => {
                     figureState.figureStartX, 
                     figureState.figureStartY,
                 ]))
-                dispatch(pushLightCash(null))
+                dispatch(pushCash(null))
             }
         }
+    }
+
+
+    function mouseLeaveAndUp(e: React.MouseEvent<HTMLCanvasElement>): void {
+        if(isAltKeyWasDown && isAltKeyDownBeforeMouse) {
+            setDifX(startX - e.pageX)
+            setDifY(startY - e.pageY)
+            setIsAltKeyWasDown(false)
+            setIsAltKeyDownBeforeMouse(false)
+        }
+        if(isMouseDown) {
+            draw(centerX + (e.pageX - width/2)/zoom.currentScale,
+             centerY + (e.pageY - height/2)/zoom.currentScale);
+
+            dispatchDuringMouseEvent(e)
+        }
+        setIsMouseDown(false);
+        canvasCtx.beginPath()
     }
 
 
@@ -341,8 +343,8 @@ const Canvas: FC = () => {
                                 className="canvas" 
                                 onMouseDown={(e) => mouseDown(e)}
                                 onMouseMove={(e) => mouseMove(e)}
-                                onMouseUp={(e) => mouseUp(e)}
-                                onMouseLeave={(e) => mouseLeave(e)}
+                                onMouseUp={(e) => mouseLeaveAndUp(e)}
+                                onMouseLeave={(e) => mouseLeaveAndUp(e)}
                             />
                             <div ref={topRef} className='observed-top'/>
                             <div ref={rightRef} className='observed-right'/>

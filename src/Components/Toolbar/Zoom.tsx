@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
 import { myReset, myZoomIn, myZoomOut } from "../../store/reducers/zoomReducer";
-import { clearLightCash } from "../../store/reducers/memoryReducer";
+import { clearCash } from "../../store/reducers/memoryReducer";
 
 
 // изменения зума и переменных, связанных с зумом
@@ -10,7 +10,7 @@ import { clearLightCash } from "../../store/reducers/memoryReducer";
 function Zoom({ zoomIn, zoomOut, centerView, resetTransform }: any) {
 
     const zoom = useSelector((state: RootState) => state.zoomReducer);
-    const lightCash = useSelector((state: RootState) => state.memoryReducer.lightCash);
+    const cash = useSelector((state: RootState) => state.memoryReducer.cash);
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx)
     const dispatch = useDispatch<AppDispatch>();
 
@@ -26,7 +26,7 @@ function Zoom({ zoomIn, zoomOut, centerView, resetTransform }: any) {
         dispatch(myReset());
         resetTransform(60);
 
-        dispatch(clearLightCash());
+        dispatch(clearCash());
         canvasCtx.fillStyle = 'white'
         canvasCtx.fillRect(0, 0, window.innerWidth, window.innerHeight)
     }

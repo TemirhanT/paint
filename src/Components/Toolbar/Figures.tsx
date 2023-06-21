@@ -7,7 +7,7 @@ import { drawCircle } from "../../DrawFunctions/Circle";
 import { drawLine } from "../../DrawFunctions/Line";
 import { drawRectangle } from "../../DrawFunctions/Rectangle";
 import { drawTriangle } from "../../DrawFunctions/Triangle";
-import { pushLightCash } from "../../store/reducers/memoryReducer";
+import { pushCash } from "../../store/reducers/memoryReducer";
 import { redraw } from "../../DrawFunctions/Redraw";
 
 
@@ -28,11 +28,8 @@ function Figures<FC>() {
     // 
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx);
     const figureState = useSelector((state: RootState) => state.figureReducer);
-    const linewidth = useSelector((state: RootState) => state.brushReducer.linewidth);
-    const color = useSelector((state: RootState) => state.colorReducer.color);
-    const lightCash = useSelector((state: RootState) => state.memoryReducer.lightCash);
-    const zoom = useSelector((state: RootState) => state.zoomReducer);
-
+    const cash = useSelector((state: RootState) => state.memoryReducer.cash);
+    const step = useSelector((state: RootState) => state.memoryReducer.step);
 
     const dispatch = useDispatch<AppDispatch>();
 
@@ -43,22 +40,23 @@ function Figures<FC>() {
 
     // комбинация отрисовки и перерисовки
     const lineFigure = (x: number, y: number, linewidth: number, color: string, scale: number) => {
-        dispatch(pushLightCash(['line', x, y, linewidth, color, scale]))
+        dispatch(pushCash(['line', x, y, linewidth, color, scale]))
         drawLine(x, y, linewidth, color, scale, canvasCtx)
     }
 
     const rectangleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number) => {
-        redraw(canvasCtx, lightCash)
+        redraw(canvasCtx, cash.slice(0, cash.length + step)) //тут используется слайс, потому что сам кэш изменяется только после pushCash события
+        // а оно происходит только при mouseLeaveAndUp и до
         drawRectangle(x, y, linewidth, color, scale, startX, startY, canvasCtx)
     }
 
     const triangleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number) => {
-        redraw(canvasCtx, lightCash)
+        redraw(canvasCtx, cash.slice(0, cash.length + step))
         drawTriangle(x, y, linewidth, color, scale, startX, startY, canvasCtx)
     }
 
     const circleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number) => {
-        redraw(canvasCtx, lightCash)
+        redraw(canvasCtx, cash.slice(0, cash.length + step))
         drawCircle(x, y, linewidth, color, scale, startX, startY, canvasCtx)
     }
 
@@ -90,18 +88,18 @@ function Figures<FC>() {
         if(figureState.figureType == 'circle') {
             dispatch(setFigureDraw(circleFigure))
         }
-    }, [lightCash])
+    }, [cash])
 
     useEffect(() => {
         const func = () => {
-            redraw(canvasCtx, lightCash)
+            redraw(canvasCtx, cash)
         } 
 
         window.addEventListener('resize', func)
         return () => {
             window.removeEventListener('resize', func)
         }
-    }, [lightCash])
+    }, [cash])
 
 
 
