@@ -43,7 +43,7 @@ function Figures<FC>() {
 
     // комбинация отрисовки и перерисовки
     const lineFigure = (x: number, y: number, linewidth: number, color: string, scale: number) => {
-        dispatch(pushCash(['line', x, y, linewidth, color, scale]))
+        dispatch(pushCash(['line', x, y, linewidth, color, scale])) //тут баг нужно пофиксить
         drawLine(x, y, linewidth, color, scale, canvasCtx)
     }
 
@@ -97,7 +97,9 @@ function Figures<FC>() {
 
     useEffect(() => {
         const func = () => {
-            redraw(canvasCtx, cash)
+            if(cash && canvasCtx) {
+                redraw(canvasCtx, cash);
+            }
         } 
 
         window.addEventListener('resize', func)
