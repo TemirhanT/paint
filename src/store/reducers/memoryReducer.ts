@@ -7,7 +7,7 @@ interface IMemoryState {
 }
 
 const memoryState: IMemoryState = {
-    cash: [], //массив, который сохраняет все нужные значения о прошлых координатах, для будущей перерисовки, во время рисования фигур
+    cash: [null], //массив, который сохраняет все нужные значения о прошлых координатах, для будущей перерисовки, во время рисования фигур
     addControl: 0,
     step: 0,
 }
@@ -15,7 +15,7 @@ const memoryState: IMemoryState = {
 
 // для перерисовки нужно запоминать прошлые значение тип фигуры, color, linewidth, zoom.currentScale, ну и координаты, поэтому очень много пропсов
 // порядок пропсов выглядит так (тип рисунка, x, y, linewidth, color, zoom.currentScale, figureStartX, figureStartY)
-export const pushCash = createAction<[string, number, number, number, string, number, number?, number?] | null>("PUSH_CASH"); 
+export const pushCash = createAction<[string, number, number, number, string, number, number?, number?, boolean?] | null>("PUSH_CASH"); 
 export const setCash = createAction<any>("SET_CASH");
 export const stepIncr = createAction<void>("STEP_INCR");
 export const stepDecr = createAction<void>("STEP_DECR");
@@ -27,11 +27,7 @@ export default createReducer(memoryState, {
         state.cash = state.cash.slice(0, state.cash.length + state.step)
         state.cash.push(action.payload);
         state.step = 0
-    },
-    "SET_CASH": function(state: IMemoryState, action: PayloadAction<any>) {
-        console.log(action.payload, state.cash)
-        state.cash = action.payload;
-        state.step = 0
+        console.log(state.cash)
     },
     "STEP_INCR": function(state: IMemoryState) {
         state.step = state.step + 1;

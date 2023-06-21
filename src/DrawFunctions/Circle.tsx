@@ -1,4 +1,4 @@
-export const drawCircle = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number, ctx: CanvasRenderingContext2D) => {
+export const drawCircle = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number, ctx: CanvasRenderingContext2D, isFill: boolean) => {
     ctx.lineWidth = linewidth;
     ctx.fillStyle = color;
     ctx.strokeStyle = color;
@@ -8,6 +8,6 @@ export const drawCircle = (x: number, y: number, linewidth: number, color: strin
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.arc(startX + (x - startX)/2, startY + (y - startY)/2 - 270/scale, radius, 0, Math.PI * 2);
-    ctx.stroke();
+    isFill ? ctx.fill() : ctx.stroke();
     ctx.beginPath();
 }

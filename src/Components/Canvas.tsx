@@ -251,6 +251,7 @@ const Canvas: FC = () => {
                     zoom.currentScale,
                     figureState.figureStartX, 
                     figureState.figureStartY,
+                    figureState.isFill,
                 ]))
                 dispatch(pushCash(null))
             }
@@ -310,9 +311,9 @@ const Canvas: FC = () => {
     // 7.по вертикали(сэтится при mouseDown)
     function draw(x: number, y: number): void {
         if(!isMouseDown) {
-            figureState.figureDraw(x, y, linewidth, color, zoom.currentScale, x - linewidth, y + linewidth)
+            figureState.figureDraw(x, y, linewidth, color, zoom.currentScale, x - linewidth, y + linewidth, figureState.isFill)
         } else {
-            figureState.figureDraw(x, y, linewidth, color, zoom.currentScale, figureState.figureStartX - linewidth, figureState.figureStartY + linewidth)
+            figureState.figureDraw(x, y, linewidth, color, zoom.currentScale, figureState.figureStartX - linewidth, figureState.figureStartY + linewidth, figureState.isFill)
         }
     }
 

@@ -5,6 +5,7 @@ interface IFigureState {
     figureDraw: Function,
     figureStartX: number,
     figureStartY: number,
+    isFill: boolean,
 }
 
 const figureState: IFigureState = {
@@ -12,12 +13,14 @@ const figureState: IFigureState = {
     figureDraw: () => {}, // сюда сетится функция рисования в компоненте figures.tsx и передается в компонент canvas.tsx в функцию draw()
     figureStartX: 0, //начальные координаты фигуры
     figureStartY: 0,
+    isFill: false,
 }
 
 export const setFigureType = createAction<string>("SET_FIGURE_TYPE")
 export const setFigureDraw = createAction<Function>("SET_FIGURE_DRAW");
 export const setFigureStartX = createAction<number>("SET_FIGURE_START_X");
 export const setFigureStartY = createAction<number>("SET_FIGURE_START_Y");  
+export const setIsFill = createAction<boolean>("SET_IS_FILL");
 
 
 
@@ -33,5 +36,8 @@ export default createReducer(figureState, {
     },
     "SET_FIGURE_START_Y": function (state: IFigureState, action: PayloadAction<number>) {
         state.figureStartY = action.payload
+    },
+    "SET_IS_FILL": function (state: IFigureState, action: PayloadAction<boolean>) {
+        state.isFill = action.payload
     },
 })

@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useDispatch } from "react-redux";
-import { setFigureDraw, setFigureType } from "../../store/reducers/figureReducer";
+import { setFigureDraw, setFigureType, setIsFill } from "../../store/reducers/figureReducer";
 import { drawCircle } from "../../DrawFunctions/Circle";
 import { drawLine } from "../../DrawFunctions/Line";
 import { drawRectangle } from "../../DrawFunctions/Rectangle";
@@ -44,20 +44,22 @@ function Figures<FC>() {
         drawLine(x, y, linewidth, color, scale, canvasCtx)
     }
 
-    const rectangleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number) => {
-        redraw(canvasCtx, cash.slice(0, cash.length + step)) //тут используется слайс, потому что сам кэш изменяется только после pushCash события
-        // а оно происходит только при mouseLeaveAndUp и до
-        drawRectangle(x, y, linewidth, color, scale, startX, startY, canvasCtx)
+    const rectangleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number, isFill: boolean) => {
+        redraw(canvasCtx, cash.slice(0, cash.length + step)) //тут и дальше используется слайс, потому что сам кэш изменяется только после pushCash события
+        // а оно происходит только при mouseLeaveAndUp и получается в функции рисования прокидывается старая версия кеша
+        // из за этого пока пользователь удерживает мышку рисуя фигуру(все кроме линии), он будет видеть уже удаленные моменты
+        // если хотите посмотреть, можете вместо кэш.слайс вставить просто кэш
+        drawRectangle(x, y, linewidth, color, scale, startX, startY, canvasCtx, isFill)
     }
 
-    const triangleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number) => {
+    const triangleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number, isFill: boolean) => {
         redraw(canvasCtx, cash.slice(0, cash.length + step))
-        drawTriangle(x, y, linewidth, color, scale, startX, startY, canvasCtx)
+        drawTriangle(x, y, linewidth, color, scale, startX, startY, canvasCtx, isFill)
     }
 
-    const circleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number) => {
+    const circleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number, isFill: boolean) => {
         redraw(canvasCtx, cash.slice(0, cash.length + step))
-        drawCircle(x, y, linewidth, color, scale, startX, startY, canvasCtx)
+        drawCircle(x, y, linewidth, color, scale, startX, startY, canvasCtx, isFill)
     }
 
 
@@ -88,7 +90,7 @@ function Figures<FC>() {
         if(figureState.figureType == 'circle') {
             dispatch(setFigureDraw(circleFigure))
         }
-    }, [cash])
+    }, [cash, step])
 
     useEffect(() => {
         const func = () => {
@@ -141,11 +143,15 @@ function Figures<FC>() {
                 <img src="/Assets/triangle.png" width={24} height={24}/>
             </button>
             <button onClick={() => chooseRectangle()}>
-                <img src="/Assets/rectangle.png" width={24} height={24}/>
+                <img src="/Assets/square.png" width={24} height={24}/>
             </button>
             <button onClick={() => chooseCircle()}>
                 <img src="/Assets/circle.png" width={24} height={24}/>
             </button>
+            <select onChange={(e) => dispatch(setIsFill((/true/.test(e.currentTarget.value))))}>
+                <option value= 'false' style={{backgroundImage: '/Assets/circleFill.png', width: 24, height: 24}}/>
+                <option value= "true" style={{backgroundImage: '/Assets/circleFill.png', width: 24, height: 24}}/>
+            </select>
         </div>
      );
 }

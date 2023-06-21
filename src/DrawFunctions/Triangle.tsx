@@ -1,4 +1,4 @@
-export const drawTriangle = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number, ctx: CanvasRenderingContext2D) => {
+export const drawTriangle = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number, ctx: CanvasRenderingContext2D, isFill: boolean) => {
     ctx.lineWidth = linewidth;
     ctx.fillStyle = color;
     ctx.strokeStyle = color;
@@ -7,6 +7,6 @@ export const drawTriangle = (x: number, y: number, linewidth: number, color: str
     ctx.lineTo(startX, startY - 270/scale);
     ctx.lineTo(x, startY - 270/scale);
     ctx.closePath();
-    ctx.stroke();
+    isFill ? ctx.fill() : ctx.stroke();
     ctx.beginPath();
 }

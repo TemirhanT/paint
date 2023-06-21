@@ -27,11 +27,11 @@ export const redraw = (ctx: CanvasRenderingContext2D, cash: number[][] & string[
             } else if(cash[i][0] == 'line') {
                 drawLine(cash[+i][1], cash[+i][2], cash[+i][3], cash[+i][4], cash[+i][5], ctx)
             } else if(cash[i][0] == 'rectangle') {
-                drawRectangle(cash[+i][1], cash[+i][2], cash[+i][3], cash[+i][4], cash[+i][5], cash[+i][6] - cash[+i][3], cash[+i][7] + cash[+i][3], ctx)
+                drawRectangle(cash[+i][1], cash[+i][2], cash[+i][3], cash[+i][4], cash[+i][5], cash[+i][6] - cash[+i][3], cash[+i][7] + cash[+i][3], ctx, cash[+i][8])
             } else if(cash[i][0] == 'triangle') {
-                drawTriangle(cash[+i][1], cash[+i][2], cash[+i][3], cash[+i][4], cash[+i][5], cash[+i][6] - cash[+i][3], cash[+i][7] + cash[+i][3], ctx)
+                drawTriangle(cash[+i][1], cash[+i][2], cash[+i][3], cash[+i][4], cash[+i][5], cash[+i][6] - cash[+i][3], cash[+i][7] + cash[+i][3], ctx, cash[+i][8])
             } else if(cash[i][0] == 'circle') {
-                drawCircle(cash[+i][1], cash[+i][2], cash[+i][3], cash[+i][4], cash[+i][5], cash[+i][6] - cash[+i][3], cash[+i][7] + cash[+i][3], ctx)
+                drawCircle(cash[+i][1], cash[+i][2], cash[+i][3], cash[+i][4], cash[+i][5], cash[+i][6] - cash[+i][3], cash[+i][7] + cash[+i][3], ctx, cash[+i][8])
             }
         }
     }
