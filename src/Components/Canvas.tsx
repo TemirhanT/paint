@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
 import Zoom from './Toolbar/Zoom'
 import { useInView } from 'react-intersection-observer';
-import { setCanvasCtx } from '../store/reducers/canvasReducer';
+import { setCanvasCtx, setIsAltKeyDownReducer } from '../store/reducers/canvasReducer';
 import { setFigureStartX, setFigureStartY } from '../store/reducers/figureReducer';
 import { pushCash } from '../store/reducers/memoryReducer';
 import { myReset } from '../store/reducers/zoomReducer';
@@ -118,7 +118,10 @@ const Canvas: FC = () => {
 
     useEffect(() => {
         const func = (e: KeyboardEvent) => {
-            if(e.altKey) setIsAltKeyDown(true)
+            if(e.altKey) {
+                setIsAltKeyDown(true);
+                dispatch(setIsAltKeyDownReducer(true));
+            }
         }
         
         window.addEventListener('keydown', func); 
@@ -130,7 +133,8 @@ const Canvas: FC = () => {
 
     useEffect(() => {
         const func = () => {
-            setIsAltKeyDown(false)
+            setIsAltKeyDown(false);
+            dispatch(setIsAltKeyDownReducer(false));
         }
 
         window.addEventListener('keyup', func);
@@ -260,11 +264,13 @@ const Canvas: FC = () => {
 
 
     function mouseLeaveAndUp(e: React.MouseEvent<HTMLCanvasElement>): void {
+        setIsMouseDown(false);
         if(isAltKeyWasDown && isAltKeyDownBeforeMouse) {
             setDifX(startX - e.pageX)
             setDifY(startY - e.pageY)
             setIsAltKeyWasDown(false)
             setIsAltKeyDownBeforeMouse(false)
+            return
         }
         if(isMouseDown) {
             draw(centerX + (e.pageX - width/2)/zoom.currentScale,
@@ -272,7 +278,6 @@ const Canvas: FC = () => {
 
             dispatchDuringMouseEvent(e)
         }
-        setIsMouseDown(false);
         canvasCtx.beginPath()
     }
 

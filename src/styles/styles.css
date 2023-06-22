@@ -3,6 +3,7 @@
   padding: 0;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
+  font-family: "Caveat", cursive;
 }
 
 .App .toolbar .figuresWrapper::before, .App .toolbar .selector-wrapper::before, .App .toolbar .color-picker::before {
@@ -90,6 +91,7 @@
   border: none;
   background-color: #a274df;
   text-decoration: none;
+  cursor: pointer;
 }
 .App .toolbar .figuresWrapper .figures .figure img {
   width: 35px;
@@ -123,6 +125,8 @@
   height: 40px;
   border: 2px #a274df solid;
   margin-left: 3px;
+  z-index: 5;
+  cursor: pointer;
 }
 .App .toolbar .figuresWrapper .fillSelector .title img {
   margin: 0 3px;
@@ -146,6 +150,7 @@
   position: absolute;
   left: -22px;
   top: 55px;
+  z-index: 3;
 }
 .App .toolbar .figuresWrapper .fillSelector .options .option {
   display: -webkit-box;
@@ -156,6 +161,7 @@
           align-items: center;
   padding: 5px;
   z-index: 10;
+  cursor: pointer;
 }
 .App .toolbar .figuresWrapper .fillSelector .options .option img {
   margin-right: 3px;
@@ -169,6 +175,13 @@
   background-color: #d1a3ef;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+}
+.App .toolbar .figuresWrapper .name {
+  position: absolute;
+  left: 85px;
+  top: 180px;
+  font-size: 13px;
+  color: rgb(52, 52, 52);
 }
 .App .space {
   width: 100%;

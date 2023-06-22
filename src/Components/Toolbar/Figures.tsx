@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useDispatch } from "react-redux";
@@ -27,9 +27,12 @@ function Figures<FC>() {
     // 
     // 
     // 
+    const figuresStrokePng: string = "/Assets/figuresStroke.png";
+    const figuresFillPng: string = "/Assets/figuresFill.png"
     const [isDroppedDown, setIsDroppedDown] = useState<boolean>(false)
-    const [imgSrc, setImgSrc] = useState<string>("/Assets/figuresStroke.png")
+    const [imgSrc, setImgSrc] = useState<string>(figuresStrokePng)
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx);
+    const isAltKeyDown = useSelector((state: RootState) => state.canvasReducer.isAltKeyDownReducer);
     const figureState = useSelector((state: RootState) => state.figureReducer);
     const cash = useSelector((state: RootState) => state.memoryReducer.cash);
     const step = useSelector((state: RootState) => state.memoryReducer.step);
@@ -43,7 +46,9 @@ function Figures<FC>() {
 
     // комбинация отрисовки и перерисовки
     const lineFigure = (x: number, y: number, linewidth: number, color: string, scale: number) => {
-        dispatch(pushCash(['line', x, y, linewidth, color, scale])) //тут баг нужно пофиксить
+        if(!isAltKeyDown) {
+            dispatch(pushCash(['line', x, y, linewidth, color, scale]))
+        }
         drawLine(x, y, linewidth, color, scale, canvasCtx)
     }
 
@@ -93,7 +98,7 @@ function Figures<FC>() {
         if(figureState.figureType == 'circle') {
             dispatch(setFigureDraw(circleFigure))
         }
-    }, [cash, step])
+    }, [cash, step, isAltKeyDown])
 
     useEffect(() => {
         const func = () => {
@@ -107,6 +112,19 @@ function Figures<FC>() {
             window.removeEventListener('resize', func)
         }
     }, [cash])
+
+    useEffect(() => {
+        const func = (e: MouseEvent) => {
+            if(e.target != document.querySelector('.title') && e.target != document.querySelectorAll('.title img')[0] && e.target != document.querySelectorAll('.title img')[1]) {
+                setIsDroppedDown(false)
+            }
+        } 
+
+        window.addEventListener('click', func)
+        return () => {
+            window.removeEventListener('click', func)
+        }
+    }, [])
 
 
 
@@ -137,8 +155,8 @@ function Figures<FC>() {
         dispatch(setFigureType('circle'));
     }
 
-    const chooseOption = (bool: boolean) => {
-        setIsDroppedDown(false);
+    const chooseOption = (bool: boolean, png: string) => {
+        setImgSrc(png)
         dispatch(setIsFill(bool))
     }
 
@@ -163,24 +181,25 @@ function Figures<FC>() {
 
 
             <div className="fillSelector">
-                <div className="title" onClick={() => setIsDroppedDown(true)}>
+                <div className="title" onClick={() => setIsDroppedDown(!isDroppedDown)}>
                     <img src={imgSrc} width={24} height={24}/>
                     <img src="/Assets/arrowDown.png" alt="arrow down" width={16} height={16}/>
                 </div>
 
                 <div className="options" style={isDroppedDown ? {display: "flex"} : {display: 'none'}}>
-                    <div className="option" onClick={() => chooseOption(false)}>
+                    <div className="option" onClick={() => chooseOption(false, figuresStrokePng)}>
                         <img src="/Assets/figuresStroke.png" width={24} height={24}/>
                         <div>Обводить</div>
                     </div>
-                    <div className="option" onClick={() => chooseOption(true)}>
+                    <div className="option" onClick={() => chooseOption(true, figuresFillPng)}>
                         <img src="/Assets/figuresFill.png" width={24} height={24}/>
                         <div>Заполнять</div>
                     </div>
                 </div>
             </div>
+            <div className="name">Фигуры</div>
         </div>
-     );
+    );
 }
 
 export default Figures;

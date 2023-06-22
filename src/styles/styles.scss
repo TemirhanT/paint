@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Caveat', cursive;
 }
 
 $first-color: #a274df;
@@ -80,6 +81,7 @@ $fourth-color: #af6cc9;
                     border:none;
                     background-color: $first-color;
                     text-decoration: none;
+                    cursor: pointer;
     
                     img{
                         width: 35px;
@@ -109,6 +111,8 @@ $fourth-color: #af6cc9;
                     height: 40px;
                     border: 2px $first-color solid;
                     margin-left: 3px;
+                    z-index: 5;
+                    cursor: pointer;
 
                     img {
                         margin: 0 3px
@@ -130,12 +134,14 @@ $fourth-color: #af6cc9;
                     position: absolute;
                     left: -22px;
                     top: 55px;
+                    z-index: 3;
 
                     .option {
                         display: flex;
                         align-items: center;
                         padding: 5px;
                         z-index: 10;
+                        cursor: pointer;
 
                         img {
                             margin-right: 3px;
@@ -154,6 +160,14 @@ $fourth-color: #af6cc9;
                         border-bottom-right-radius: 10px;
                     }
                 }
+            }
+
+            .name {
+                position: absolute;
+                left: 85px;
+                top: 180px; 
+                font-size: 13px;
+                color: rgb(52, 52, 52);
             }
         }
 
