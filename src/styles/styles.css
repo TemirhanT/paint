@@ -1,12 +1,13 @@
+@import url("https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap");
 * {
   margin: 0;
   padding: 0;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  font-family: "Caveat", cursive;
+  font-family: "Balsamiq Sans", cursive;
 }
 
-.App .toolbar .figuresWrapper::before, .App .toolbar .selector-wrapper::before, .App .toolbar .color-picker::before {
+.App .toolbar .figuresWrapper::before, .App .toolbar .selector-wrapper::before, .App .toolbar .color-wrapper::before {
   content: "";
   height: 200px;
   border-right: 2px rgb(32, 42, 72) solid;
@@ -35,18 +36,52 @@
   width: 100%;
   height: 250px;
 }
-.App .toolbar .color-picker {
+.App .toolbar .color-wrapper {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  width: 300px;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  position: relative;
+  width: 320px;
 }
-.App .toolbar .color-picker .sketch-picker {
-  top: 0;
-  height: 220px;
+.App .toolbar .color-wrapper .current-color {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px #ddc7e1 solid;
+}
+.App .toolbar .color-wrapper .all-color {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  width: 120px;
+}
+.App .toolbar .color-wrapper .all-color .one-color {
+  border-radius: 50%;
+  border: 2px #a274df solid;
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+}
+.App .toolbar .color-wrapper .all-color .one-color:hover {
+  border-color: rgb(32, 42, 72);
+}
+.App .toolbar .color-wrapper .color-picker {
+  width: 50px;
+  height: 50px;
+}
+.App .toolbar .color-wrapper .name {
+  position: absolute;
+  left: 160px;
+  top: 180px;
+  font-size: 13px;
+  color: rgb(52, 52, 52);
 }
 .App .toolbar .selector-wrapper {
   height: 220px;

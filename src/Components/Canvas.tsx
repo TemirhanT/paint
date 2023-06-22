@@ -64,7 +64,7 @@ const Canvas: FC = () => {
 
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx);
     const figureState = useSelector((state: RootState) => state.figureReducer);
-    const linewidth = useSelector((state: RootState) => state.brushReducer.linewidth);
+    const linewidth = useSelector((state: RootState) => state.brushReducer.linewidth)
     const color = useSelector((state: RootState) => state.colorReducer.color);
     const zoom = useSelector((state: RootState) => state.zoomReducer);
     const cash = useSelector((state: RootState) => state.memoryReducer.cash)

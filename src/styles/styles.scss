@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Caveat', cursive;
+    font-family: 'Balsamiq Sans', cursive;
 }
 
 $first-color: #a274df;
@@ -32,18 +34,59 @@ $fourth-color: #af6cc9;
         width: 100%;
         height: 250px;
 
-        .color-picker {
+        .color-wrapper {
             display: flex;
             align-items: center;
-            width: 300px;
+            justify-content: space-around;
+            position: relative;
+            width: 320px;
 
-            .sketch-picker {
-                top: 0;
-                height: 220px;
+            .current-color {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                border: 2px #ddc7e1 solid
+            }
+
+            .all-color {
+                display: flex;
+                flex-wrap: wrap;
+                width: 120px;
+    
+                .one-color {
+                    border-radius: 50%;
+                    border: 2px $first-color solid;
+                    width: 25px;
+                    height: 25px;
+                    margin-right: 5px;
+                }
+                
+                .one-color:hover {
+                    border-color: $second-color
+                }
+            }
+
+
+            .color-picker {
+                width: 50px;
+                height: 50px;
+    
+                // .sketch-picker {
+                //     top: 0;
+                //     height: 220px;
+                // }
+            }
+
+            .name {
+                position: absolute;
+                left: 160px;
+                top: 180px; 
+                font-size: 13px;
+                color: rgb(52, 52, 52);
             }
         }
 
-        .color-picker::before {
+        .color-wrapper::before {
             @extend %before
         }
 
