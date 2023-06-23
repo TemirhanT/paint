@@ -11,7 +11,7 @@
   content: "";
   height: 200px;
   border-right: 2px rgb(32, 42, 72) solid;
-  margin: 0 20px;
+  margin: 0 40px;
 }
 
 .App {
@@ -45,16 +45,27 @@
           align-items: center;
   -ms-flex-pack: distribute;
       justify-content: space-around;
-  position: relative;
-  width: 320px;
+  width: 380px;
 }
-.App .toolbar .color-wrapper .current-color {
+.App .toolbar .color-wrapper .color-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  position: inherit;
+}
+.App .toolbar .color-wrapper .color-container .current-color {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   border: 2px #ddc7e1 solid;
+  margin-right: 20px;
 }
-.App .toolbar .color-wrapper .all-color {
+.App .toolbar .color-wrapper .color-container .all-color {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -62,26 +73,40 @@
       flex-wrap: wrap;
   width: 120px;
 }
-.App .toolbar .color-wrapper .all-color .one-color {
+.App .toolbar .color-wrapper .color-container .all-color .one-color {
   border-radius: 50%;
   border: 2px #a274df solid;
   width: 25px;
   height: 25px;
   margin-right: 5px;
 }
-.App .toolbar .color-wrapper .all-color .one-color:hover {
+.App .toolbar .color-wrapper .color-container .all-color .one-color:hover {
   border-color: rgb(32, 42, 72);
 }
-.App .toolbar .color-wrapper .color-picker {
-  width: 50px;
-  height: 50px;
-}
-.App .toolbar .color-wrapper .name {
+.App .toolbar .color-wrapper .color-container .name {
   position: absolute;
-  left: 160px;
-  top: 180px;
+  top: 205px;
   font-size: 13px;
   color: rgb(52, 52, 52);
+}
+.App .toolbar .color-wrapper .color-picker {
+  position: absolute;
+  left: 37.5%;
+  top: 25%;
+  z-index: 10;
+  width: 25%;
+  min-width: 500px;
+}
+@media screen and (max-width: 2000px) {
+  .App .toolbar .color-wrapper .color-picker {
+    top: calc((100% - 484px) / 2);
+    left: calc((100% - 500px) / 2);
+  }
+}
+@media screen and (max-height: 1000px) {
+  .App .toolbar .color-wrapper .color-picker {
+    top: calc((100% - 484px) / 2);
+  }
 }
 .App .toolbar .selector-wrapper {
   height: 220px;
@@ -148,7 +173,7 @@
       -ms-flex-direction: column;
           flex-direction: column;
   position: absolute;
-  left: 130px;
+  left: 170px;
 }
 .App .toolbar .figuresWrapper .fillSelector .title {
   display: -webkit-box;

@@ -15,7 +15,7 @@ $fourth-color: #af6cc9;
     content: '';
     height: 200px;
     border-right: 2px $second-color solid;
-    margin: 0 20px;
+    margin: 0 40px;
 }
 
 .App {
@@ -38,51 +38,65 @@ $fourth-color: #af6cc9;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            position: relative;
-            width: 320px;
+            width: 380px;
 
-            .current-color {
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                border: 2px #ddc7e1 solid
-            }
-
-            .all-color {
+            .color-container {
                 display: flex;
-                flex-wrap: wrap;
-                width: 120px;
-    
-                .one-color {
+                align-items: center;
+                justify-content: space-around;
+                position: inherit;
+
+                .current-color {
+                    width: 50px;
+                    height: 50px;
                     border-radius: 50%;
-                    border: 2px $first-color solid;
-                    width: 25px;
-                    height: 25px;
-                    margin-right: 5px;
+                    border: 2px #ddc7e1 solid;
+                    margin-right: 20px;
                 }
-                
-                .one-color:hover {
-                    border-color: $second-color
+    
+                .all-color {
+                    display: flex;
+                    flex-wrap: wrap;
+                    width: 120px;
+        
+                    .one-color {
+                        border-radius: 50%;
+                        border: 2px $first-color solid;
+                        width: 25px;
+                        height: 25px;
+                        margin-right: 5px;
+                    }
+                    
+                    .one-color:hover {
+                        border-color: $second-color
+                    }
+                }
+
+                .name {
+                    position: absolute;
+                    top: 205px;
+                    font-size: 13px;
+                    color: rgb(52, 52, 52);
                 }
             }
+
 
 
             .color-picker {
-                width: 50px;
-                height: 50px;
-    
-                // .sketch-picker {
-                //     top: 0;
-                //     height: 220px;
-                // }
-            }
-
-            .name {
                 position: absolute;
-                left: 160px;
-                top: 180px; 
-                font-size: 13px;
-                color: rgb(52, 52, 52);
+                left: 37.5%;
+                top: 25%;
+                z-index: 10;
+                width: 25%;
+                min-width: 500px;
+
+                @media screen and (max-width: 2000px) {
+                    top: calc((100% - 484px)/2);
+                    left: calc((100% - 500px)/2);
+                }
+                @media screen and (max-height: 1000px) {
+                    top: calc((100% - 484px)/2);
+                }
             }
         }
 
@@ -146,7 +160,7 @@ $fourth-color: #af6cc9;
                 display: flex;
                 flex-direction: column;
                 position: absolute;
-                left: 130px;
+                left: 170px;
 
                 .title {
                     display: flex;
@@ -278,3 +292,4 @@ $fourth-color: #af6cc9;
         }
     }
 }
+

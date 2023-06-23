@@ -27,7 +27,6 @@ export default createReducer(memoryState, {
         state.cash = state.cash.slice(0, state.cash.length + state.step)
         state.cash.push(action.payload);
         state.step = 0
-        console.log(state.cash)
     },
     "STEP_INCR": function(state: IMemoryState) {
         state.step = state.step + 1;
