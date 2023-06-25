@@ -2,12 +2,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
 import { myReset, myZoomIn, myZoomOut } from "../../store/reducers/zoomReducer";
 import { clearCash } from "../../store/reducers/memoryReducer";
+import { useEffect, useRef } from "react";
 
 
 // изменения зума и переменных, связанных с зумом
 
 
 function Zoom({ zoomIn, zoomOut, centerView, resetTransform }: any) {
+
 
     const zoom = useSelector((state: RootState) => state.zoomReducer);
     const cash = useSelector((state: RootState) => state.memoryReducer.cash);
@@ -31,12 +33,14 @@ function Zoom({ zoomIn, zoomOut, centerView, resetTransform }: any) {
         canvasCtx.fillRect(0, 0, window.innerWidth, window.innerHeight)
     }
 
+
     return ( 
         <div className="zoom">
-            <button onClick={() => customZoomIn()}>+</button>
-            <button onClick={() => customZoomOut()}>-</button>
-            <button onClick={() => customReset()}>reset</button>
-            <span>{zoom.currentScale}</span>
+            <img src="/Assets/zoom-in.png" onClick={() => customZoomIn()}/>
+            <img src="/Assets/zoom-out.png" onClick={() => customZoomOut()}/>
+            <img src="/Assets/reset.png" onClick={() => customReset()}/>
+            <span>Зум: {zoom.currentScale}</span>
+            <div className="name">Приближение/Отдаление/Сброс</div>
         </div>
      );
 }

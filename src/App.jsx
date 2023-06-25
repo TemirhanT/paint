@@ -7,15 +7,14 @@ import Linewidth from './Components/Toolbar/Linewidth';
 import Color from './Components/Toolbar/Color';
 import Figures from './Components/Toolbar/Figures';
 import CancelRetrieve from './Components/Toolbar/CancelRetrieve';
+import Tutorial from './Components/Tutorial';
+import { useRef, useEffect } from 'react';
 
 function App() {
 
-  const linewidth = useSelector(state => state.brushReducer.linewidth)
-  const dispatch = useDispatch()
-
-  console.log(linewidth)
   return (
     <div className="App">
+      <Tutorial/>
       <div className='toolbar'>
         <CancelRetrieve/>
         <Linewidth/>

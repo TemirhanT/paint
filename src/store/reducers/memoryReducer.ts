@@ -2,19 +2,20 @@ import { PayloadAction, createAction, createReducer } from "@reduxjs/toolkit"
 
 interface IMemoryState {
     cash: any,
-    addControl: number, //переменная следит за случаями когда в lightCash добавляются данные.
     step: number,
 }
 
 const memoryState: IMemoryState = {
     cash: [null], //массив, который сохраняет все нужные значения о прошлых координатах, для будущей перерисовки, во время рисования фигур
-    addControl: 0,
-    step: 0,
+    step: 0, //значение указывающее на количество действий, которые отменил пользователь
+    //если значение равно нулю то значит пользователь не может вернуть действие по двум причинам
+    //1 - либо потому что вернул все отмененные действия
+    //2 - либо потому что добавил новый элемент в массив и все прошлые отмененные действия удалились
 }
 
 
 // для перерисовки нужно запоминать прошлые значение тип фигуры, color, linewidth, zoom.currentScale, ну и координаты, поэтому очень много пропсов
-// порядок пропсов выглядит так (тип рисунка, x, y, linewidth, color, zoom.currentScale, figureStartX, figureStartY)
+// порядок пропсов выглядит так (тип рисунка, x, y, linewidth, color, zoom.currentScale, figureStartX, figureStartY, isFill)
 export const pushCash = createAction<[string, number, number, number, string, number, number?, number?, boolean?] | null>("PUSH_CASH"); 
 export const setCash = createAction<any>("SET_CASH");
 export const stepIncr = createAction<void>("STEP_INCR");

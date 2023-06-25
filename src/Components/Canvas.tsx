@@ -121,6 +121,9 @@ const Canvas: FC = () => {
             if(e.altKey) {
                 setIsAltKeyDown(true);
                 dispatch(setIsAltKeyDownReducer(true));
+                if(canvasRef.current) {
+                    canvasRef.current.style.cursor = 'grab';
+                }
             }
         }
         
@@ -135,6 +138,9 @@ const Canvas: FC = () => {
         const func = () => {
             setIsAltKeyDown(false);
             dispatch(setIsAltKeyDownReducer(false));
+            if(canvasRef.current) {
+                canvasRef.current.style.cursor = 'default';
+            }
         }
 
         window.addEventListener('keyup', func);
@@ -314,6 +320,7 @@ const Canvas: FC = () => {
     // 5.скейл 
     // 6.начальная точка фигуры по горизонтали (сэтится при mouseDown)
     // 7.по вертикали(сэтится при mouseDown)
+    // 8.заполнять фигуру или рисовать только контур
     function draw(x: number, y: number): void {
         if(!isMouseDown) {
             figureState.figureDraw(x, y, linewidth, color, zoom.currentScale, x - linewidth, y + linewidth, figureState.isFill)

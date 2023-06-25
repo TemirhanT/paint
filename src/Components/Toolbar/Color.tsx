@@ -11,10 +11,16 @@ import { changeColor } from "../../store/reducers/colorReducer";
 const Color: FC = () => {
 
 
+    const colorRef = useRef(null);
+
     const [colorPickerDisplay, setColorPickerDisplay] = useState<boolean>(false)
     const color = useSelector((state: RootState) => state.colorReducer.color)
     const dispatch = useDispatch<AppDispatch>()
 
+
+    //eventListener который следит за нажатиями вне объектов колор пикера для скрытия 
+    //он такой сложный поскольку компонент sketchPicker добавленный из библиотеки react-color содержит очень много дочерних div'ов
+    //и прописывать их все в условии будет еще хуже
     useEffect(() => {
         const func = (e: MouseEvent) => {
             const recursion = (htmlElement: any) => {
@@ -44,6 +50,7 @@ const Color: FC = () => {
     }, [])
 
 
+
     return ( 
         <div className="color-wrapper">
             <div className="color-container">
@@ -64,7 +71,7 @@ const Color: FC = () => {
                     <div className="one-color" style={{backgroundColor: 'blue'}} onClick={() => dispatch(changeColor('blue'))}/>
                 </div>
 
-                <img src="/Assets/colorWheel.png" width={60} height={60} style={{objectFit: 'fill', marginLeft: 20}} onClick={() => setColorPickerDisplay(!colorPickerDisplay)}/>
+                <img src="/Assets/colorWheel.png" onClick={() => setColorPickerDisplay(!colorPickerDisplay)}/>
 
                 <div className="name">Цвета</div>
             </div>

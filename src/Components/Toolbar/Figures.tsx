@@ -9,7 +9,6 @@ import { drawRectangle } from "../../DrawFunctions/Rectangle";
 import { drawTriangle } from "../../DrawFunctions/Triangle";
 import { pushCash } from "../../store/reducers/memoryReducer";
 import { redraw } from "../../DrawFunctions/Redraw";
-import { hover } from "@testing-library/user-event/dist/hover";
 
 
 // выбор фигуры для рисования
@@ -115,7 +114,9 @@ function Figures<FC>() {
 
     useEffect(() => {
         const func = (e: MouseEvent) => {
-            if(e.target != document.querySelector('.title') && e.target != document.querySelectorAll('.title img')[0] && e.target != document.querySelectorAll('.title img')[1]) {
+            if(e.target != document.querySelector('.fillSelector .title') && 
+            e.target != document.querySelectorAll('.fillSelector .title img')[0] && 
+            e.target != document.querySelectorAll('.fillSelector .title img')[1]) {
                 setIsDroppedDown(false)
             }
         } 
@@ -163,7 +164,7 @@ function Figures<FC>() {
 
 
     return ( 
-        <div className="figuresWrapper">
+        <div className="figures-wrapper">
             <div className="figures">
                 <button className="figure" onClick={() => chooseLine()}>
                     <img src="/Assets/curved-line.png"/>
@@ -180,7 +181,7 @@ function Figures<FC>() {
             </div>
 
 
-            <div className="fillSelector">
+            <div className="fill-selector">
                 <div className="title" onClick={() => setIsDroppedDown(!isDroppedDown)}>
                     <img src={imgSrc} width={24} height={24}/>
                     <img src="/Assets/arrowDown.png" alt="arrow down" width={16} height={16}/>

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
 import { pushCash, setCash, stepDecr, stepIncr } from "../../store/reducers/memoryReducer";
@@ -7,7 +7,6 @@ import { redraw } from "../../DrawFunctions/Redraw";
 const CancelRetrieve: FC = () => {
     
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx)
-    const addControl = useSelector((state: RootState) => state.memoryReducer.addControl);
     const cash = useSelector((state: RootState) => state.memoryReducer.cash);
     const step = useSelector((state: RootState) => state.memoryReducer.step);
 
@@ -35,6 +34,8 @@ const CancelRetrieve: FC = () => {
         redraw(canvasCtx, changedCash)
     }
 
+
+
     // изначально был вариант с stepDraw() вкладывать сразу в retrieve и cancel
     // но значение step использовалось прошлое 
     // так что тут я сделал что то вроде async await
@@ -46,13 +47,15 @@ const CancelRetrieve: FC = () => {
     }, [step, canvasCtx])
 
     return ( 
-        <div>
-            <button onClick={() => cancel()}>
-                <img  src="/Assets/cancel.png" width={24} height={24}/>
-            </button>
-            <button onClick={() => retrieve()}>
-                <img src="/Assets/retrieve.png" width={24} height={24}/>
-            </button>
+        <div className="cancel-retrieve-container">
+            <div className="cancel-retrieve">
+                <img className={(cash.length - 1 + step) <= 0 ? "unactive" : ''} src="/Assets/cancel.png" onClick={() => cancel()}/>
+                <img className={step == 0 ? "unactive" : ''} src="/Assets/retrieve.png" onClick={() => retrieve()}/>
+            </div>
+
+            <div className="name">
+                отменить/вернуть
+            </div>
         </div>
     );
 }
