@@ -39,6 +39,7 @@ const Canvas: FC = memo(() => {
     const [difY, setDifY] = useState<number>(0);
     const [centerX, setCenterX] = useState<number>(width/2);
     const [centerY, setCenterY] = useState<number>(height/2);
+    const [isDisabled, setIsDisabled] = useState<boolean>(false)
 
 
 
@@ -257,6 +258,7 @@ const Canvas: FC = memo(() => {
     function mouseDown(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(e.button == 2 || e.button == 1) return
         setIsMouseDown(true);
+        setIsDisabled(false)
         if(isAltKeyDown) {
             setIsAltKeyDownBeforeMouse(true)
             setStartX(e.pageX);
@@ -293,7 +295,7 @@ const Canvas: FC = memo(() => {
     }
 
 
-    function mouseLeaveAndUp(e: React.MouseEvent<HTMLCanvasElement>): void {
+    function mouseUp(e: React.MouseEvent<HTMLCanvasElement>): void {
         setIsMouseDown(false);
         if(isAltKeyWasDown && isAltKeyDownBeforeMouse) {
             setDifX(startX - e.pageX)
@@ -309,6 +311,11 @@ const Canvas: FC = memo(() => {
             dispatchDuringMouseEvent(e)
         }
         canvasCtx.beginPath()
+    }
+
+    function mouseLeave (e: React.MouseEvent<HTMLCanvasElement>): void {
+        mouseUp(e);
+        setIsDisabled(true);
     }
 
 
@@ -362,7 +369,7 @@ const Canvas: FC = memo(() => {
             initialScale={zoom.currentScale}
             minScale={zoom.minScale}
             maxScale={zoom.maxScale}
-            panning={{activationKeys: ["Alt"], velocityDisabled: true}}
+            panning={{activationKeys: ["Alt"], velocityDisabled: true, disabled: isDisabled}}
             disablePadding={true}
             wheel={{disabled: true}}
             doubleClick={{disabled: true}}
@@ -380,8 +387,8 @@ const Canvas: FC = memo(() => {
                                 className="canvas" 
                                 onMouseDown={(e) => mouseDown(e)}
                                 onMouseMove={(e) => mouseMove(e)}
-                                onMouseUp={(e) => mouseLeaveAndUp(e)}
-                                onMouseLeave={(e) => mouseLeaveAndUp(e)}
+                                onMouseUp={(e) => mouseUp(e)}
+                                onMouseLeave={(e) => mouseLeave(e)}
                             />
                             <div ref={topRef} className='observed-top'/>
                             <div ref={rightRef} className='observed-right'/>
