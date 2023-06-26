@@ -36,9 +36,9 @@ const Zoom: FC = memo(({ zoomIn, zoomOut, centerView, resetTransform }: any) => 
 
     return ( 
         <div className="zoom">
-            <img src="/Assets/zoom-in.png" onClick={() => customZoomIn()}/>
-            <img src="/Assets/zoom-out.png" onClick={() => customZoomOut()}/>
-            <img src="/Assets/reset.png" onClick={() => customReset()}/>
+            <img src="./Assets/zoom-in.png" onClick={() => customZoomIn()}/>
+            <img src="./Assets/zoom-out.png" onClick={() => customZoomOut()}/>
+            <img src="./Assets/reset.png" onClick={() => customReset()}/>
             <span>Зум: {zoom.currentScale}</span>
             <div className="name">Приближение/Отдаление/Сброс</div>
         </div>

@@ -15,7 +15,7 @@ import ZoomTutorial from "./ToolbarTutorial/ZoomTutorial";
 
 const Tutorial = memo(() => {
 
-    const [isAllWatched, setIsAllWatched] = useState<boolean>(true);
+    const [isAllWatched, setIsAllWatched] = useState<boolean>(false);
     const [whatAct, setWhatAct] = useState<number>(0);
 
     const watchAgain = () => {
@@ -33,7 +33,6 @@ const Tutorial = memo(() => {
     useEffect(() => {
         if(whatAct == 11) {
             setIsAllWatched(true)
-            console.log('done')
         }
     }, [whatAct])
 
@@ -145,12 +144,12 @@ const Tutorial = memo(() => {
                         На этом все! Если вы что то забыли, то можете нажать на знак вопроса в правом верхнем углу и снова пройти это мини-обучение. Веселитесь!
                     </div>
 
-                    <img src="/Assets/question.png" className="tutorial"/>
+                    <img src="./Assets/question.png" className="tutorial"/>
                 </div>
             </div>
 
 
-            <img src="/Assets/question.png" className="tutorial" onClick={() => watchAgain()}/>
+            <img src="./Assets/question.png" className="tutorial" onClick={() => watchAgain()}/>
         </>
      );
 })

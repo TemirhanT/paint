@@ -67,7 +67,7 @@ const Color: FC = memo(() => {
                     <div className="one-color" style={{backgroundColor: 'blue'}} onClick={() => dispatch(changeColor('blue'))}/>
                 </div>
 
-                <img src="/Assets/colorWheel.png" onClick={() => setColorPickerDisplay(!colorPickerDisplay)}/>
+                <img src="./Assets/colorWheel.png" onClick={() => setColorPickerDisplay(!colorPickerDisplay)}/>
 
                 <div className="name">Цвета</div>
             </div>

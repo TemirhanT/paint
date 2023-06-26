@@ -49,8 +49,8 @@ const CancelRetrieve: FC = memo(() => {
     return ( 
         <div className="cancel-retrieve-container">
             <div className="cancel-retrieve">
-                <img className={(cash.length - 1 + step) <= 0 ? "unactive" : ''} src="/Assets/cancel.png" onClick={() => cancel()}/>
-                <img className={step == 0 ? "unactive" : ''} src="/Assets/retrieve.png" onClick={() => retrieve()}/>
+                <img className={(cash.length - 1 + step) <= 0 ? "unactive" : ''} src="./Assets/cancel.png" onClick={() => cancel()}/>
+                <img className={step == 0 ? "unactive" : ''} src="./Assets/retrieve.png" onClick={() => retrieve()}/>
             </div>
 
             <div className="name">
