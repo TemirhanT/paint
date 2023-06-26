@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, memo} from 'react';
 import { useRef, useEffect, useState} from "react";
 import { useSelector } from 'react-redux/es/exports';
 import { AppDispatch, RootState } from '../store/store';
@@ -13,7 +13,7 @@ import { myReset } from '../store/reducers/zoomReducer';
 
 
 
-const Canvas: FC = () => {
+const Canvas: FC = memo(() => {
 
 
     // ЧАСТЬ С ПЕРЕМЕННЫМИ
@@ -289,7 +289,7 @@ const Canvas: FC = () => {
 
 
 
-    function mouseMove(e: React.MouseEvent<HTMLCanvasElement>): void {
+    const mouseMove = (e: React.MouseEvent<HTMLCanvasElement>): void => {
         if(!isMouseDown) return
 
         if(isAltKeyDown && isAltKeyDownBeforeMouse) {
@@ -369,6 +369,6 @@ const Canvas: FC = () => {
             </TransformWrapper>
         </div>
      );
-}
+})
  
 export default Canvas;

@@ -2,13 +2,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
 import { myReset, myZoomIn, myZoomOut } from "../../store/reducers/zoomReducer";
 import { clearCash } from "../../store/reducers/memoryReducer";
-import { useEffect, useRef } from "react";
+import { FC, memo } from "react";
 
 
 // изменения зума и переменных, связанных с зумом
 
 
-function Zoom({ zoomIn, zoomOut, centerView, resetTransform }: any) {
+const Zoom: FC = memo(({ zoomIn, zoomOut, centerView, resetTransform }: any) => {
 
 
     const zoom = useSelector((state: RootState) => state.zoomReducer);
@@ -43,6 +43,6 @@ function Zoom({ zoomIn, zoomOut, centerView, resetTransform }: any) {
             <div className="name">Приближение/Отдаление/Сброс</div>
         </div>
      );
-}
+})
 
 export default Zoom;

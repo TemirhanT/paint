@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, memo, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
 import { useDispatch } from "react-redux";
@@ -17,7 +17,7 @@ import { redraw } from "../../DrawFunctions/Redraw";
 
 
 
-function Figures<FC>() {
+const Figures: FC =  memo(() => {
 
     // ПЕРЕМЕННЫЕ
     // 
@@ -28,7 +28,7 @@ function Figures<FC>() {
     // 
     const figuresStrokePng: string = "/Assets/figuresStroke.png";
     const figuresFillPng: string = "/Assets/figuresFill.png"
-    const [isDroppedDown, setIsDroppedDown] = useState<boolean>(false)
+    const [isFiguresDroppedDown, setIsFiguresDroppedDown] = useState<boolean>(false);
     const [imgSrc, setImgSrc] = useState<string>(figuresStrokePng)
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx);
     const isAltKeyDown = useSelector((state: RootState) => state.canvasReducer.isAltKeyDownReducer);
@@ -114,10 +114,11 @@ function Figures<FC>() {
 
     useEffect(() => {
         const func = (e: MouseEvent) => {
-            if(e.target != document.querySelector('.fillSelector .title') && 
-            e.target != document.querySelectorAll('.fillSelector .title img')[0] && 
-            e.target != document.querySelectorAll('.fillSelector .title img')[1]) {
-                setIsDroppedDown(false)
+            if(e.target != document.querySelector('.fill-selector .title') && 
+            e.target != document.querySelectorAll('.fill-selector .title img')[0] && 
+            e.target != document.querySelectorAll('.fill-selector .title img')[1]) {
+                setIsFiguresDroppedDown(false)
+                console.log(e.target)
             }
         } 
 
@@ -182,12 +183,12 @@ function Figures<FC>() {
 
 
             <div className="fill-selector">
-                <div className="title" onClick={() => setIsDroppedDown(!isDroppedDown)}>
+                <div className="title" onClick={() => {setIsFiguresDroppedDown(!isFiguresDroppedDown); console.log('24')}}>
                     <img src={imgSrc} width={24} height={24}/>
                     <img src="/Assets/arrowDown.png" alt="arrow down" width={16} height={16}/>
                 </div>
 
-                <div className="options" style={isDroppedDown ? {display: "flex"} : {display: 'none'}}>
+                <div className="options" style={isFiguresDroppedDown ? {display: "flex"} : {display: 'none'}}>
                     <div className="option" onClick={() => chooseOption(false, figuresStrokePng)}>
                         <img src="/Assets/figuresStroke.png" width={24} height={24}/>
                         <div>Обводить</div>
@@ -201,6 +202,6 @@ function Figures<FC>() {
             <div className="name">Фигуры</div>
         </div>
     );
-}
+})
 
 export default Figures;

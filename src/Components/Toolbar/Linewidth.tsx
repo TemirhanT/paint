@@ -1,15 +1,14 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, memo, useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
 import { changeBrush } from "../../store/reducers/brushReducer";
-import { AppDispatch, RootState } from "../../store/store";
+import { AppDispatch } from "../../store/store";
 
 
 
 // выбор толщины кисти
 
 
-const Linewidth: FC = () => {
+const Linewidth: FC = memo(() => {
 
     const dispatch = useDispatch<AppDispatch>();
     const [isDroppedDown, setIsDroppedDown] = useState<boolean>(false);
@@ -66,6 +65,6 @@ const Linewidth: FC = () => {
             </div>
         </div>
     )
-}
+})
 
 export default Linewidth;

@@ -176,6 +176,8 @@ $fourth-color: #af6cc9;
 
             .action-6 {
                 @extend %tutorial;
+                height: 15%;
+                top: 42.5%;
             }
         }
 
@@ -401,7 +403,7 @@ $fourth-color: #af6cc9;
                     position: absolute;
                     left: 82px;
                     top: 160px;
-                    z-index: 5;
+                    z-index: 210;
                     width: 60px;
 
                     .option {
@@ -592,11 +594,12 @@ $fourth-color: #af6cc9;
                     height: 40px;
                     border: 2px $first-color solid;
                     margin-left: 3px;
-                    z-index: 5;
+                    z-index: 210;
                     cursor: pointer;
 
                     img {
-                        margin: 0 3px
+                        margin: 0 3px;
+                        z-index: 210;
                     }
                 }
 
@@ -615,7 +618,7 @@ $fourth-color: #af6cc9;
                     position: absolute;
                     left: -22px;
                     top: 55px;
-                    z-index: 3;
+                    z-index: 210;
 
                     .option {
                         display: flex;

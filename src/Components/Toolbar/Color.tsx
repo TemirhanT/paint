@@ -1,18 +1,14 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, memo, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
-import { PhotoshopPicker, SketchPicker } from 'react-color';
+import { SketchPicker } from 'react-color';
 import { changeColor } from "../../store/reducers/colorReducer";
 
 
 // изменение цвета
 
 
-const Color: FC = () => {
-
-
-    const colorRef = useRef(null);
-
+const Color: FC = memo(() => {
     const [colorPickerDisplay, setColorPickerDisplay] = useState<boolean>(false)
     const color = useSelector((state: RootState) => state.colorReducer.color)
     const dispatch = useDispatch<AppDispatch>()
@@ -84,6 +80,6 @@ const Color: FC = () => {
             </div>
         </div>
      );
-}
+})
  
 export default Color;

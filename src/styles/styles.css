@@ -157,6 +157,10 @@
 .App .tutorial-container .action-6-container .toolbar .linewidth-container .name {
   display: none;
 }
+.App .tutorial-container .action-6-container .action-6 {
+  height: 15%;
+  top: 42.5%;
+}
 .App .tutorial-container .action-7-container {
   height: 160px;
   width: 270px;
@@ -352,7 +356,7 @@
   position: absolute;
   left: 82px;
   top: 160px;
-  z-index: 5;
+  z-index: 210;
   width: 60px;
 }
 .App .toolbar .linewidth-container .linewidth-selector .options .option {
@@ -547,11 +551,12 @@
   height: 40px;
   border: 2px #a274df solid;
   margin-left: 3px;
-  z-index: 5;
+  z-index: 210;
   cursor: pointer;
 }
 .App .toolbar .figures-wrapper .fill-selector .title img {
   margin: 0 3px;
+  z-index: 210;
 }
 .App .toolbar .figures-wrapper .fill-selector .title:hover {
   background-color: #d1a3ef;
@@ -572,7 +577,7 @@
   position: absolute;
   left: -22px;
   top: 55px;
-  z-index: 3;
+  z-index: 210;
 }
 .App .toolbar .figures-wrapper .fill-selector .options .option {
   display: -webkit-box;

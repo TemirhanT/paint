@@ -1,10 +1,10 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, memo, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
-import { pushCash, setCash, stepDecr, stepIncr } from "../../store/reducers/memoryReducer";
+import { stepDecr, stepIncr } from "../../store/reducers/memoryReducer";
 import { redraw } from "../../DrawFunctions/Redraw";
 
-const CancelRetrieve: FC = () => {
+const CancelRetrieve: FC = memo(() => {
     
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx)
     const cash = useSelector((state: RootState) => state.memoryReducer.cash);
@@ -58,6 +58,6 @@ const CancelRetrieve: FC = () => {
             </div>
         </div>
     );
-}
+})
  
 export default CancelRetrieve;

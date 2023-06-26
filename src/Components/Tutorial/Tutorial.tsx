@@ -1,14 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import CancelRetrieve from "./Toolbar/CancelRetrieve";
-import Linewidth from "./Toolbar/Linewidth";
-import Color from "./Toolbar/Color";
-import Figures from "./Toolbar/Figures";
-import Zoom from "./Toolbar/Zoom";
-import Canvas from "./Canvas";
+import { RootState } from "../../store/store";
+import CancelRetrieve from "../Toolbar/CancelRetrieve";
+import Linewidth from "../Toolbar/Linewidth";
+import Color from "../Toolbar/Color";
+import Figures from "../Toolbar/Figures";
+import Zoom from "../Toolbar/Zoom";
+import Canvas from "../Canvas";
+import CancelRetrieveTutorial from "./ToolbarTutorial/CancelRetrieveTutorial";
+import ColorTutorial from "./ToolbarTutorial/ColorTutorial";
+import FiguresTutorial from "./ToolbarTutorial/FiguresTutorial";
+import LinewidthTutorial from "./ToolbarTutorial/LinewidthTutorial";
+import ZoomTutorial from "./ToolbarTutorial/ZoomTutorial";
 
-const Tutorial = () => {
+const Tutorial = memo(() => {
 
     const [isAllWatched, setIsAllWatched] = useState<boolean>(true);
     const [whatAct, setWhatAct] = useState<number>(0);
@@ -84,22 +89,22 @@ const Tutorial = () => {
                         Инструменты.
                     </div>
                     <div className="toolbar">
-                        <CancelRetrieve/>
-                        <Linewidth/>
-                        <Color/>
-                        <Figures/> 
-                        <Zoom/>
+                        <CancelRetrieveTutorial/>
+                        <LinewidthTutorial/>
+                        <ColorTutorial/>
+                        <FiguresTutorial/> 
+                        <ZoomTutorial/>
                     </div>
                 </div>
                 <div className="action-3-container" style={whatAct !== 3 ? {display: 'none'} : {display: 'flex'}}>
                     <div className="action-3">И холст.</div>
 
                         <div className='toolbar' style={{opacity: 0}}>
-                            <CancelRetrieve/>
-                            <Linewidth/>
-                            <Color/>
-                            <Figures/>
-                            <Zoom/>
+                            <CancelRetrieveTutorial/>
+                            <LinewidthTutorial/>
+                            <ColorTutorial/>
+                            <FiguresTutorial/> 
+                            <ZoomTutorial/>
                         </div>
                         <div className='space'></div>
                         <Canvas/>
@@ -107,30 +112,30 @@ const Tutorial = () => {
                 <div className="action-4-container" style={whatAct !== 4 ? {display: 'none'} : {display: 'flex'}}>
                     <div className="action-4">Среди инструментов есть отмена и возврат отмененного действия.</div>
                     <div className="toolbar">
-                        <CancelRetrieve/>
+                        <CancelRetrieveTutorial/>
                     </div>
                 </div>
                 <div className="action-5-container" style={whatAct !== 5 ? {display: 'none'} : {display: 'flex'}}>
                     <div className="action-5">Взаимодействие с зумом на холсте и нынешнее значение зума.</div>
-                    <div className="toolbar"><Zoom/></div>
+                    <div className="toolbar"><ZoomTutorial/></div>
                 </div>
                 <div className="action-6-container" style={whatAct !== 6 ? {display: 'none'} : {display: 'flex'}}>
                     <div className="action-6">
                         Выбор размера кисти.
                     </div>
-                    <div className="toolbar"><Linewidth/></div>
+                    <div className="toolbar"><LinewidthTutorial/></div>
                 </div>
                 <div className="action-7-container" style={whatAct !== 7 ? {display: 'none'} : {display: 'flex'}}>
                     <div className="action-7">
                         Выбор цвета. Предоставляются уже готовые варианты цветов, но также можно открыть полную палитру, нажав на разноцветный круг справа.
                     </div>
-                    <div className="toolbar"><Color/></div>
+                    <div className="toolbar"><ColorTutorial/></div>
                 </div>
                 <div className="action-8-container" style={whatAct !== 8 ? {display: 'none'} : {display: 'flex'}}>
                     <div className="action-8">
                         И несколько фигур для рисования. По умолчанию стоит первая фигура - линия, то есть обычное рисование. Вы также можете нажать на три кубика справа и выбрать заполнять вам рисуемую фигуру или вы хотите чтобы она только обводилась.
                     </div>
-                    <div className="toolbar"><Figures/></div>
+                    <div className="toolbar"><FiguresTutorial/></div>
                 </div>
                 <div className="action-9" style={whatAct !== 9 ? {display: 'none'} : {display: 'flex'}}>
                     У холста есть только одна особенная функция - перемещение по холсту. Перемещение нужно во время использования зума ведь увеличение идет лишь в центр вашего экрана. Для перемещения зажмите кнопку Alt и используйте ЛКМ. Если вы используете Mac, то вместо Alt зажимайте на кнопку Option.
@@ -148,6 +153,6 @@ const Tutorial = () => {
             <img src="/Assets/question.png" className="tutorial" onClick={() => watchAgain()}/>
         </>
      );
-}
+})
  
 export default Tutorial;
