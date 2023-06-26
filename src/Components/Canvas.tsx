@@ -52,7 +52,9 @@ const Canvas: FC = memo(() => {
     const [bottomRef, bottomInView, bottomEntry] = useInView(options);
     const [leftRef, leftInView, leftEntry] = useInView(options);
     const [prevScale, setPrevScale] = useState<number>(1);
-    const [delay, setDelay] = useState<boolean>(false);
+    const [delayZoom, setDelayZoom] = useState<boolean>(false);
+    const [delayDifX, setDelayDifX] = useState<boolean>(false);
+    const [delayDifY, setDelayDifY] = useState<boolean>(false);
 
 
 
@@ -155,13 +157,35 @@ const Canvas: FC = memo(() => {
     // значение передвинутых центров перестают учитывать difX и difY и расчитываются по другим формулам
     // useEffect'ы с дилэем и currentScale'ом в дэпсах нужны для случаев, когда пользователь уменьшает зум и задевает край экрана,во время расширения
     // а delay позволяет дать время обновится значению скейла и правильно расчитать значение центра
+
+    
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setDelayDifX(!delayDifX)
+        }, 300)
+
+        return () => {
+            clearTimeout(timeout)
+        }
+    }, [difX])
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setDelayDifY(!delayDifY)
+        }, 300)
+
+        return () => {
+            clearTimeout(timeout)
+        }
+    }, [difY])
+
     useEffect(() => {
         setCenterX((prev: number): number => {
             if(leftEntry?.isIntersecting) return width/(2*zoom.currentScale)
             if(rightEntry?.isIntersecting) return width - width/(2*zoom.currentScale)
             return prev + difX / zoom.currentScale;
         })
-    }, [difX])
+    }, [delayDifX])
 
 
     useEffect(() => {
@@ -170,13 +194,13 @@ const Canvas: FC = memo(() => {
             if(bottomEntry?.isIntersecting) return height - height/(2*zoom.currentScale)
             return prev + difY / zoom.currentScale;
         })
-    }, [difY])
+    }, [delayDifY])
 
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            setDelay(!delay)
-        }, 100)
+            setDelayZoom(!delayZoom)
+        }, 300)
 
         return () => {
             clearTimeout(timeout)
@@ -198,7 +222,7 @@ const Canvas: FC = memo(() => {
             return prev
         })
         setPrevScale(zoom.currentScale)
-    }, [delay])
+    }, [delayZoom])
 
 
 

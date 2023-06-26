@@ -24,7 +24,7 @@ const Color: FC = memo(() => {
                     setColorPickerDisplay(true)
                     return
                 }
-                if(htmlElement == document.querySelector('body')) {
+                if(htmlElement == document.querySelector('HTML')) {
                     setColorPickerDisplay(false)
                     return
                 }
