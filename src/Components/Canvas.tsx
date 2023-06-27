@@ -272,6 +272,17 @@ const Canvas: FC = memo(() => {
              centerY + (e.pageY - height/2)/zoom.currentScale);
     }
 
+    function touchDown(e: React.TouchEvent<HTMLCanvasElement>): void {
+        setIsMouseDown(true)
+        setIsDisabled(false)
+        canvasCtx.beginPath()
+        dispatch(setFigureStartX(e.touches[0].pageX));
+        dispatch(setFigureStartY(e.touches[0].pageY));
+        draw(e.touches[0].pageX, e.touches[0].pageY);
+    }
+
+
+
 
     function dispatchDuringMouseEvent(e: React.MouseEvent<HTMLCanvasElement>): void {
         if(!isAltKeyWasDown && !isAltKeyDownBeforeMouse) {
@@ -295,6 +306,27 @@ const Canvas: FC = memo(() => {
     }
 
 
+    function dispatchDuringTouchEvent(e: React.TouchEvent<HTMLCanvasElement>): void {
+        if(figureState.figureType == 'line') {
+            dispatch(pushCash(null))
+            console.log(cash)
+        }  else {
+            dispatch(pushCash([
+                figureState.figureType, 
+                e.changedTouches[0].pageX,
+                e.changedTouches[0].pageY, 
+                linewidth, 
+                color, 
+                zoom.currentScale,
+                figureState.figureStartX, 
+                figureState.figureStartY,
+                figureState.isFill,
+            ]))
+            dispatch(pushCash(null))
+        }
+    }
+
+
     function mouseUp(e: React.MouseEvent<HTMLCanvasElement>): void {
         setIsMouseDown(false);
         if(isAltKeyWasDown && isAltKeyDownBeforeMouse) {
@@ -312,6 +344,16 @@ const Canvas: FC = memo(() => {
         }
         canvasCtx.beginPath()
     }
+
+    function touchUp(e: React.TouchEvent<HTMLCanvasElement>): void {
+        setIsMouseDown(false);
+        console.log(e.changedTouches)
+        draw(e.changedTouches[0].pageX,
+            e.changedTouches[0].pageY);
+        dispatchDuringTouchEvent(e)
+        canvasCtx.beginPath()
+    }
+
 
     function mouseLeave (e: React.MouseEvent<HTMLCanvasElement>): void {
         mouseUp(e);
@@ -340,6 +382,12 @@ const Canvas: FC = memo(() => {
 
         draw(centerX + (e.pageX - width/2)/zoom.currentScale,
              centerY + (e.pageY - height/2)/zoom.currentScale);
+    }
+
+
+    const touchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+        draw(e.touches[0].pageX,
+            e.touches[0].pageY);
     }
 
 
@@ -385,6 +433,10 @@ const Canvas: FC = memo(() => {
                                 height={height} 
                                 width={width} 
                                 className="canvas" 
+                                onTouchStart={(e) => touchDown(e)}
+                                onTouchEnd={(e) => touchUp(e)}
+                                onTouchMove={(e) => touchMove(e)}
+                                onTouchMoveCapture={(e) => touchMove(e)}
                                 onMouseDown={(e) => mouseDown(e)}
                                 onMouseMove={(e) => mouseMove(e)}
                                 onMouseUp={(e) => mouseUp(e)}
