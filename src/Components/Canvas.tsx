@@ -229,6 +229,26 @@ const Canvas: FC = memo(() => {
     }, [delayZoom])
 
 
+    useEffect(() => {
+        canvasRef.current?.addEventListener('touchstart', touchDown, {passive: false});
+        return () => {
+            canvasRef.current?.removeEventListener('touchstart', touchDown);
+        }
+    })
+    useEffect(() => {
+        canvasRef.current?.addEventListener('touchmove', touchMove, {passive: false});
+        return () => {
+            canvasRef.current?.removeEventListener('touchmove', touchMove);
+        }
+    })
+    useEffect(() => {
+        canvasRef.current?.addEventListener('touchend', touchUp, {passive: false});
+        return () => {
+            canvasRef.current?.removeEventListener('touchend', touchUp);
+        }
+    })
+
+
 
 
 
@@ -275,7 +295,8 @@ const Canvas: FC = memo(() => {
              centerY + (e.pageY - height/2)/zoom.currentScale);
     }
 
-    function touchDown(e: React.TouchEvent<HTMLCanvasElement>): void {
+    function touchDown(e: any): void {
+        e.preventDefault();
         setIsMouseDown(true)
         setIsDisabled(false)
         if(isPanningMobile) {
@@ -315,11 +336,10 @@ const Canvas: FC = memo(() => {
     }
 
 
-    function dispatchDuringTouchEvent(e: React.TouchEvent<HTMLCanvasElement>): void {
+    function dispatchDuringTouchEvent(e: React.TouchEvent<any>): void {
         if(!isPanningMobile) {
             if(figureState.figureType == 'line') {
                 dispatch(pushCash(null))
-                console.log(cash)
             }  else {
                 dispatch(pushCash([
                     figureState.figureType, 
@@ -356,7 +376,8 @@ const Canvas: FC = memo(() => {
         canvasCtx.beginPath()
     }
 
-    function touchUp(e: React.TouchEvent<HTMLCanvasElement>): void {
+    function touchUp(e: any): void {
+        e.preventDefault();
         setIsMouseDown(false);
         if(isPanningMobile) {
             setDifX(startX - e.changedTouches[0].pageX)
@@ -366,7 +387,6 @@ const Canvas: FC = memo(() => {
             return
         }
 
-        console.log(e.changedTouches)
         draw(centerX + (e.changedTouches[0].pageX - width/2)/zoom.currentScale,
              centerY + (e.changedTouches[0].pageY - height/2)/zoom.currentScale);
         dispatchDuringTouchEvent(e)
@@ -404,7 +424,8 @@ const Canvas: FC = memo(() => {
     }
 
 
-    const touchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    const touchMove = (e: any) => {
+        e.preventDefault()
         if(!isPanningMobile) {
             draw(centerX + (e.touches[0].pageX - width/2)/zoom.currentScale,
                  centerY + (e.touches[0].pageY - height/2)/zoom.currentScale);
@@ -454,10 +475,6 @@ const Canvas: FC = memo(() => {
                                 height={height} 
                                 width={width} 
                                 className="canvas" 
-                                onTouchStart={(e) => touchDown(e)}
-                                onTouchEnd={(e) => touchUp(e)}
-                                onTouchMove={(e) => touchMove(e)}
-                                onTouchMoveCapture={(e) => touchMove(e)}
                                 onMouseDown={(e) => mouseDown(e)}
                                 onMouseMove={(e) => mouseMove(e)}
                                 onMouseUp={(e) => mouseUp(e)}

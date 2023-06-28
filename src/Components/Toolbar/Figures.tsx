@@ -49,7 +49,6 @@ const Figures: FC =  memo(() => {
             dispatch(pushCash(['line', x, y, linewidth, color, scale]))
         }
         drawLine(x, y, linewidth, color, scale, canvasCtx)
-        console.log('line')
     }
 
     const rectangleFigure = (x: number, y: number, linewidth: number, color: string, scale: number, startX:number, startY: number, isFill: boolean) => {
