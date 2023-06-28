@@ -9,6 +9,7 @@ import Figures from './Components/Toolbar/Figures';
 import CancelRetrieve from './Components/Toolbar/CancelRetrieve';
 import Tutorial from './Components/Tutorial/Tutorial';
 import { useRef, useEffect } from 'react';
+import IsPanningMobile from './Components/Toolbar/IsPanningMobile';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         <Linewidth/>
         <Color/>
         <Figures/> 
+        <IsPanningMobile/>
         {/* <Zoom/> 
         этот компонент находится в файле canvas.tsx, иначе фукнционал не будет работать.
         А тут он находится лишь для напоминания и избежания путаницы, ведь на странице с помощью position absolute он перемещен к остальным инструментам */}

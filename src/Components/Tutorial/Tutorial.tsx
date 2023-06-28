@@ -1,17 +1,13 @@
 import { memo, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import CancelRetrieve from "../Toolbar/CancelRetrieve";
-import Linewidth from "../Toolbar/Linewidth";
-import Color from "../Toolbar/Color";
-import Figures from "../Toolbar/Figures";
-import Zoom from "../Toolbar/Zoom";
 import Canvas from "../Canvas";
 import CancelRetrieveTutorial from "./ToolbarTutorial/CancelRetrieveTutorial";
 import ColorTutorial from "./ToolbarTutorial/ColorTutorial";
 import FiguresTutorial from "./ToolbarTutorial/FiguresTutorial";
 import LinewidthTutorial from "./ToolbarTutorial/LinewidthTutorial";
 import ZoomTutorial from "./ToolbarTutorial/ZoomTutorial";
+import IsPanningMobileTutorial from "./ToolbarTutorial/IsPanningMobileTutorial";
+import { BrowserView, MobileView } from "react-device-detect";
+import CanvasTutorial from "./ToolbarTutorial/CanvasTutorial";
 
 const Tutorial = memo(() => {
 
@@ -93,6 +89,7 @@ const Tutorial = memo(() => {
                         <ColorTutorial/>
                         <FiguresTutorial/> 
                         <ZoomTutorial/>
+                        <IsPanningMobileTutorial/>
                     </div>
                 </div>
                 <div className="action-3-container" style={whatAct !== 3 ? {display: 'none'} : {display: 'flex'}}>
@@ -104,9 +101,10 @@ const Tutorial = memo(() => {
                             <ColorTutorial/>
                             <FiguresTutorial/> 
                             <ZoomTutorial/>
+                            <IsPanningMobileTutorial/>
                         </div>
                         <div className='space'></div>
-                        <Canvas/>
+                        <CanvasTutorial/>
                 </div>
                 <div className="action-4-container" style={whatAct !== 4 ? {display: 'none'} : {display: 'flex'}}>
                     <div className="action-4">Среди инструментов есть отмена и возврат отмененного действия.</div>
@@ -136,9 +134,21 @@ const Tutorial = memo(() => {
                     </div>
                     <div className="toolbar"><FiguresTutorial/></div>
                 </div>
-                <div className="action-9" style={whatAct !== 9 ? {display: 'none'} : {display: 'flex'}}>
-                    У холста есть только одна особенная функция - перемещение по холсту. Перемещение нужно во время использования зума, ведь увеличение идет лишь в центр вашего экрана. Для перемещения зажмите кнопку Alt и используйте ЛКМ. Если вы используете Mac, то, вместо Alt, зажимайте кнопку Option.
-                </div>
+                <BrowserView>
+                    <div className="action-9" style={whatAct !== 9 ? {display: 'none'} : {display: 'flex'}}>
+                        У холста есть только одна особенная функция - перемещение по холсту. Перемещение нужно во время использования зума, ведь увеличение идет лишь в центр вашего экрана. Для перемещения зажмите кнопку Alt и используйте ЛКМ. Если вы используете Mac, то, вместо Alt, зажимайте кнопку Option.
+                    </div>
+                </BrowserView>
+                <MobileView>
+                    <div className="action-9-container-mobile"  style={whatAct !== 9 ? {display: 'none'} : {display: 'flex'}}>
+                        <div className="action-9-mobile">
+                            У холста есть только одна особенная функция - перемещение по холсту. Перемещение нужно во время использования зума, ведь увеличение идет лишь в центр вашего экрана. Для переключения с режима рисования на режим перемещения нажмите на кнопку справа снизу в разделе инструментов.
+                        </div>
+                        <div className="wrapper">
+                            <div className="toolbar"><IsPanningMobileTutorial/></div>
+                        </div>
+                    </div>
+                </MobileView>
                 <div className="end-container" style={whatAct !== 10 ? {display: 'none'} : {display: 'flex'}}>
                     <div className="end">
                         На этом все! Если вы что то забыли, то можете нажать на знак вопроса в правом верхнем углу и снова пройти это мини-обучение. Веселитесь!
