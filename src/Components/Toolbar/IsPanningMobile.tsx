@@ -14,7 +14,7 @@ const IsPanningMobile = () => {
     return ( 
         <MobileView>
             <div className="is-panning-mobile">
-                <img className={isPanning ? "active" : ''} src="./Assets/panning.png" onClick={() => dispatch(setIsPanningMobile())}/>
+                <img className={isPanning ? "active" : ''} src="/paint/Assets/panning.png" onClick={() => dispatch(setIsPanningMobile())}/>
             </div>
         </MobileView>
      );

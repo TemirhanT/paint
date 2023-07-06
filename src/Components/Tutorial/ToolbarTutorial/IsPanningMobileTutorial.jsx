@@ -2,7 +2,7 @@ const IsPanningMobileTutorial = () => {
 
     return ( 
         <div className="is-panning-mobile">
-            <img src="./Assets/panning.png"/>
+            <img src="/Assets/panning.png"/>
         </div>
      );
 }

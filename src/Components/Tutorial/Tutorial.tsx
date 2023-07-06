@@ -89,7 +89,7 @@ const Tutorial = memo(() => {
                         <ColorTutorial/>
                         <FiguresTutorial/> 
                         <ZoomTutorial/>
-                        <IsPanningMobileTutorial/>
+                        <MobileView><IsPanningMobileTutorial/></MobileView>
                     </div>
                 </div>
                 <div className="action-3-container" style={whatAct !== 3 ? {display: 'none'} : {display: 'flex'}}>
@@ -101,7 +101,7 @@ const Tutorial = memo(() => {
                             <ColorTutorial/>
                             <FiguresTutorial/> 
                             <ZoomTutorial/>
-                            <IsPanningMobileTutorial/>
+                            <MobileView><IsPanningMobileTutorial/></MobileView>
                         </div>
                         <div className='space'></div>
                         <CanvasTutorial/>
@@ -154,12 +154,12 @@ const Tutorial = memo(() => {
                         На этом все! Если вы что то забыли, то можете нажать на знак вопроса в правом верхнем углу и снова пройти это мини-обучение. Веселитесь!
                     </div>
 
-                    <img src="./Assets/question.png" className="tutorial"/>
+                    <img src="/paint/Assets/question.png" className="tutorial"/>
                 </div>
             </div>
 
 
-            <img src="./Assets/question.png" className="tutorial" onClick={() => watchAgain()}/>
+            <img src="/paint/Assets/question.png" className="tutorial" onClick={() => watchAgain()}/>
         </>
      );
 })

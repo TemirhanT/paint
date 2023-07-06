@@ -22,7 +22,7 @@ const ColorTutorial = memo(() => {
                     <div className="one-color" style={{backgroundColor: 'blue'}}/>
                 </div>
 
-                <img src="./Assets/colorWheel.png"/>
+                <img src="/Assets/colorWheel.png"/>
 
                 <div className="name">Цвета</div>
             </div>

@@ -26,8 +26,8 @@ const Figures: FC =  memo(() => {
     // 
     // 
     // 
-    const figuresStrokePng: string = "./Assets/figuresStroke.png";
-    const figuresFillPng: string = "./Assets/figuresFill.png"
+    const figuresStrokePng: string = "/paint/Assets/figuresStroke.png";
+    const figuresFillPng: string = "/paint/Assets/figuresFill.png";
     const [isFiguresDroppedDown, setIsFiguresDroppedDown] = useState<boolean>(false);
     const [imgSrc, setImgSrc] = useState<string>(figuresStrokePng)
     const canvasCtx = useSelector((state: RootState) => state.canvasReducer.canvasCtx);
@@ -167,16 +167,16 @@ const Figures: FC =  memo(() => {
         <div className="figures-wrapper">
             <div className="figures">
                 <button className="figure" onClick={() => chooseLine()}>
-                    <img src="./Assets/curved-line.png"/>
+                    <img src="/paint/Assets/curved-line.png"/>
                 </button>
                 <button className="figure" onClick={() => chooseTriangle()}>
-                    <img src="./Assets/triangle.png"/>
+                    <img src="/paint/Assets/triangle.png"/>
                 </button>
                 <button className="figure" onClick={() => chooseRectangle()}>
-                    <img src="./Assets/square.png"/>
+                    <img src="/paint/Assets/square.png"/>
                 </button>
                 <button className="figure" onClick={() => chooseCircle()}>
-                    <img src="./Assets/circle.png"/>
+                    <img src="/paint/Assets/circle.png"/>
                 </button>
             </div>
 
@@ -184,16 +184,16 @@ const Figures: FC =  memo(() => {
             <div className="fill-selector">
                 <div className="title" onClick={() => {setIsFiguresDroppedDown(!isFiguresDroppedDown); console.log('24')}}>
                     <img src={imgSrc} width={24} height={24}/>
-                    <img src="./Assets/arrowDown.png" alt="arrow down" width={16} height={16}/>
+                    <img src="/paint/Assets/arrowDown.png" alt="arrow down" width={16} height={16}/>
                 </div>
 
                 <div className="options" style={isFiguresDroppedDown ? {display: "flex"} : {display: 'none'}}>
                     <div className="option" onClick={() => chooseOption(false, figuresStrokePng)}>
-                        <img src="./Assets/figuresStroke.png" width={24} height={24}/>
+                        <img src="/paint/Assets/figuresStroke.png" width={24} height={24}/>
                         <div>Обводить</div>
                     </div>
                     <div className="option" onClick={() => chooseOption(true, figuresFillPng)}>
-                        <img src="./Assets/figuresFill.png" width={24} height={24}/>
+                        <img src="/paint/Assets/figuresFill.png" width={24} height={24}/>
                         <div>Заполнять</div>
                     </div>
                 </div>

@@ -40,8 +40,8 @@ const Linewidth: FC = memo(() => {
         <div className="linewidth-container">
             <div className="linewidth-selector">
                 <div className="title" onClick={() => setIsDroppedDown(!isDroppedDown)}>
-                    <img src='./Assets/brush.png' width={35} height={35}/>
-                    <img src="./Assets/arrowDown.png" alt="arrow down" width={16} height={16}/>
+                    <img src='/paint/Assets/brush.png' width={35} height={35}/>
+                    <img src="/paint/Assets/arrowDown.png" alt="arrow down" width={16} height={16}/>
                 </div>
 
                 <div className="options" style={isDroppedDown ? {display: "flex"} : {display: 'none'}}>
